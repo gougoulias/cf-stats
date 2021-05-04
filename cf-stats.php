@@ -91,7 +91,8 @@ function cf_stats_plugin($atts){
 								echo 'kathari timi = ' . $newvalue .'<br>';
 							// }else{
 							// 	$isgroup=false;
-								// edw prepei na epanalabw tin epanalipsi wste na kanw append sta arrays analoga me to grouo
+								// edw prepei na epanalabw tin epanalipsi wste na kanw append sta arrays analoga me to group
+								// edw einai i prwti allagi pou ginetai sto cloned apo ta ubuntu
 							}
 						}
 						
