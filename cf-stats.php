@@ -44,7 +44,7 @@ function cf_stats_plugin($atts){
 		//prepare regular expression
 		$pattern = "/_field_/i";
 
-		$temp_group= array();
+		//$temp_group= array();
 		//get the fields values
 		foreach ($flamingo_posts as $flp) {
 			//echo "<br>flamingo post start<br>";
@@ -66,9 +66,9 @@ function cf_stats_plugin($atts){
 				echo "<br>Flamingo post start<br>";
 				$get_the_keys=array_keys(get_post_meta($flp));
 				//print_r($get_the_keys);
-				$isgroup=false;
+				//$isgroup=false;
 				foreach ($get_the_keys as $fkey) {
-					if (preg_match($pattern, $fkey) ){
+					if (preg_match('/_field_/i', $fkey) ){
 						echo 'to kleidi einai : ' .$fkey . '<br>';
 						//$fkey=substr($fkey,7);
 						
@@ -80,8 +80,8 @@ function cf_stats_plugin($atts){
 							//echo $group_field;
 							if($fkey==$group_field){
 								echo " einai group <br>";
-								$isgroup=true;
-								$temp_group[]=substr($fkey,7);
+								//$isgroup=true;
+								$group_name=substr($fkey,7);
 								$value=get_post_meta($flp)[$fkey][0];
 								$regex_value='(.*:")';
 								$replacement = '$1';
@@ -89,24 +89,30 @@ function cf_stats_plugin($atts){
 								$regex_value='(".*)';
 								$newvalue= preg_replace($regex_value, $replacement, $newvalue);
 								echo 'kathari timi = ' . $newvalue .'<br>';
-							// }else{
-							// 	$isgroup=false;
-								// edw prepei na epanalabw tin epanalipsi wste na kanw append sta arrays analoga me to group
-								// edw einai i prwti allagi pou ginetai sto cloned apo ta ubuntu
+								//second loop starts here
+								foreach ($get_the_keys as $fkey) {
+									if (preg_match('/_field_/i', $fkey) ){
+										echo 'to kleidi einai : ' .$fkey . '<br>';
+										print_r(get_post_meta($flp)[$fkey]);
+										echo '</br>';
+										//keep the values to the array me to newvalue
+										$groups_array[$group_name][$newvalue][]=get_post_meta($flp)[$fkey];
+										//keep the values also to the ungrouped array
+										$groups_array[$group_name]['ungrouped'][]=get_post_meta($flp)[$fkey];
+									}
+								}
+							}else{ // stin periptwsi pou den einai grouped swse tis times sto ungrouped array mono	
+								foreach ($get_the_keys as $fkey) {
+									if (preg_match('/_field_/i', $fkey) ){
+										echo 'to kleidi einai : ' .$fkey . '<br>';
+										print_r(get_post_meta($flp)[$fkey]);
+										echo '</br>';
+										$groups_array[$group_name]['ungrouped'][]=get_post_meta($flp)[$fkey];
+									}
+								}
 							}
 						}
 						
-						//auta edw prepe na fugoun kai na mpei i epanalispi ksana epanw
-						//diladi tha exw mia epanalipsi gia na briskw to group
-						// kai eswterika NEA epanalipsi gia  na apothikeyw tis times twn apotelesmatwn
-						print_r(get_post_meta($flp)[$fkey]);
-						if ($isgroup==true){
-							foreach ($temp_group as $tg) {
-								$groups_array[$tg][]=get_post_meta($flp)[$fkey];
-								echo ' mpike sto array me to group ' . $tg .'';
-							}
-							
-						}
 						echo "<br>";
 					}
 				}
@@ -117,7 +123,9 @@ function cf_stats_plugin($atts){
 	}else{
 		echo "<br>The shortcode parameter 'name=' is required <br>";
 	}
-	
+	echo 'groups arrays is <br>';
+	print_r($groups_array);
+	echo "<br>------------<br>";
 	//print_r($groups_array);
 	$json_records=json_encode($groups_array);
 	echo 'this is the json :<br>' . $json_records .'<br>';
