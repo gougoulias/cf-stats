@@ -93,8 +93,17 @@ function cf_stats_plugin($atts){
 										echo 'to kleidi einai : ' .$fkeygrouped . '<br>';
 										print_r(get_post_meta($flp)[$fkeygrouped]);
 										echo '</br>';
+										$valuegrouped=get_post_meta($flp)[$fkeygrouped][0];
+											// $regex_value='(.*:")';
+											// $replacement = '$1';
+											// $newvaluegrouped= preg_replace($regex_value, $replacement, $valuegrouped);
+											// $regex_value='(".*)';
+											// $newvaluegrouped= preg_replace($regex_value, $replacement, $newvaluegrouped);
+											// echo 'kathari timi new value= ' . $newvaluegrouped .'<br>';
 										//keep the values to the array with the newvalue
-										$groups_array[$group_name][$newvalue][$fkeygrouped][]=get_post_meta($flp)[$fkeygrouped];
+										//$groups_array[$group_name][$newvalue][$fkeygrouped][]=get_post_meta($flp)[$fkeygrouped];
+										//$groups_array[$group_name][$newvalue][$fkeygrouped][]=$newvaluegrouped;
+										$groups_array[$group_name][$newvalue][$fkeygrouped][]=$valuegrouped;
 									}
 								}
 								echo "<br>--------group ENDS HERE--------------<br>";
@@ -104,8 +113,17 @@ function cf_stats_plugin($atts){
 						echo 'to kleidi einai : ' .$fkey . '<br>';
 						print_r(get_post_meta($flp)[$fkey]);
 						echo '</br>';
+						$value_ungrouped=get_post_meta($flp)[$fkey][0];
+							// $regex_value='(.*:")';
+							// $replacement = '$1';
+							// $newvalue_ungrouped= preg_replace($regex_value, $replacement, $value_ungrouped);
+							// $regex_value='(".*)';
+							// $newvalue_ungrouped= preg_replace($regex_value, $replacement, $newvalue_ungrouped);
+							// echo 'kathari timi ungrouped = ' . $newvalue_ungrouped .'<br>';
 						// keeps the values to the 'ungrouped' array
-						$groups_array['ungrouped'][$fkey][]=get_post_meta($flp)[$fkey];
+						//$groups_array['ungrouped']['ungrouped'][$fkey][]=get_post_meta($flp)[$fkey];
+						// $groups_array['ungrouped'][$fkey][]=$newvalue_ungrouped;
+						$groups_array['ungrouped']['ungrouped'][$fkey][]=$value_ungrouped;
 						echo "<br>";
 						
 					}
@@ -117,27 +135,29 @@ function cf_stats_plugin($atts){
 		echo "<br>The shortcode parameter 'name=' is required <br>";
 	}
 	echo 'groups arrays is <br>';
+	echo'<pre>';
 	print_r($groups_array);
-	// // how to count 1st try starts
-	// echo '<br>counting starts<br>';
-	// foreach ($groups_array as $ga) {
-	// 	//print_r($ga)
-	// 	foreach ($ga as $cgroups){
-	// 		//print_r($cgroups);
-	// 		foreach ($cgroups as $cvalues) {
-	// 			//print_r($cvalues);
-	// 			print_r(array_count_values($cvalues));
-	// 			foreach ($cvalues as $cv) {
-	// 				//print_r($cv);
-	// 				print_r(array_count_values($cv));
-	// 			}
-	// 		}	
-	// 	}	
-	// }
+	echo'</pre>';
+	// how to count 1st try starts
+	echo '<br>counting starts<br><pre>';
+	foreach ($groups_array as $ga) {
+		//print_r($ga)
+		foreach ($ga as $cgroups){
+			//print_r($cgroups);
+			foreach ($cgroups as $cvalues) {
+				//print_r($cvalues);
+				print_r(array_count_values($cvalues));
+				// foreach ($cvalues as $cv) {
+				// 	//print_r($cv);
+				// 	print_r(array_count_values($cv));
+				// }
+			}	
+		}	
+	}
 
-	// //print_r(array_count_values($groups_array));
-	// echo '<br>counting ends<br>';
-	// // how to count 1st try ends
+	//print_r(array_count_values($groups_array));
+	echo '</pre><br>counting ends<br>';
+	// how to count 1st try ends
 	echo "<br>------------<br>";
 	//print_r($groups_array);
 	$json_records=json_encode($groups_array);
