@@ -118,6 +118,26 @@ function cf_stats_plugin($atts){
 	}
 	echo 'groups arrays is <br>';
 	print_r($groups_array);
+	// // how to count 1st try starts
+	// echo '<br>counting starts<br>';
+	// foreach ($groups_array as $ga) {
+	// 	//print_r($ga)
+	// 	foreach ($ga as $cgroups){
+	// 		//print_r($cgroups);
+	// 		foreach ($cgroups as $cvalues) {
+	// 			//print_r($cvalues);
+	// 			print_r(array_count_values($cvalues));
+	// 			foreach ($cvalues as $cv) {
+	// 				//print_r($cv);
+	// 				print_r(array_count_values($cv));
+	// 			}
+	// 		}	
+	// 	}	
+	// }
+
+	// //print_r(array_count_values($groups_array));
+	// echo '<br>counting ends<br>';
+	// // how to count 1st try ends
 	echo "<br>------------<br>";
 	//print_r($groups_array);
 	$json_records=json_encode($groups_array);
