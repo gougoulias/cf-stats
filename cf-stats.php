@@ -69,19 +69,17 @@ function cf_stats_plugin($atts){
 				//$isgroup=false;
 				foreach ($get_the_keys as $fkey) {
 					if (preg_match('/_field_/i', $fkey) ){
-						echo 'to kleidi einai : ' .$fkey . '<br>';
-						//$fkey=substr($fkey,7);
 						
 						//start grouping
-						
 						foreach ($allgroups as $sgroup) {
 							$group_field='_field_';
 							$group_field.=(string)$sgroup;
 							//echo $group_field;
 							if($fkey==$group_field){
 								echo " einai group <br>";
-								//$isgroup=true;
+								echo "<br>--------group starts HERE--------------<br>";
 								$group_name=substr($fkey,7);
+								echo "GROUP NAME = ". $group_name . '<br>';
 								$value=get_post_meta($flp)[$fkey][0];
 								$regex_value='(.*:")';
 								$replacement = '$1';
@@ -90,35 +88,30 @@ function cf_stats_plugin($atts){
 								$newvalue= preg_replace($regex_value, $replacement, $newvalue);
 								echo 'kathari timi = ' . $newvalue .'<br>';
 								//second loop starts here
-								foreach ($get_the_keys as $fkey) {
-									if (preg_match('/_field_/i', $fkey) ){
-										echo 'to kleidi einai : ' .$fkey . '<br>';
-										print_r(get_post_meta($flp)[$fkey]);
+								foreach ($get_the_keys as $fkeygrouped) {
+									if (preg_match('/_field_/i', $fkeygrouped) ){
+										echo 'to kleidi einai : ' .$fkeygrouped . '<br>';
+										print_r(get_post_meta($flp)[$fkeygrouped]);
 										echo '</br>';
-										//keep the values to the array me to newvalue
-										$groups_array[$group_name][$newvalue][]=get_post_meta($flp)[$fkey];
-										//keep the values also to the ungrouped array
-										$groups_array[$group_name]['ungrouped'][]=get_post_meta($flp)[$fkey];
+										//keep the values to the array with the newvalue
+										$groups_array[$group_name][$newvalue][$fkeygrouped][]=get_post_meta($flp)[$fkeygrouped];
 									}
 								}
-							}else{ // stin periptwsi pou den einai grouped swse tis times sto ungrouped array mono	
-								foreach ($get_the_keys as $fkey) {
-									if (preg_match('/_field_/i', $fkey) ){
-										echo 'to kleidi einai : ' .$fkey . '<br>';
-										print_r(get_post_meta($flp)[$fkey]);
-										echo '</br>';
-										$groups_array[$group_name]['ungrouped'][]=get_post_meta($flp)[$fkey];
-									}
-								}
+								echo "<br>--------group ENDS HERE--------------<br>";
 							}
-						}
-						
+						}//end grouping
+
+						echo 'to kleidi einai : ' .$fkey . '<br>';
+						print_r(get_post_meta($flp)[$fkey]);
+						echo '</br>';
+						// keeps the values to the 'ungrouped' array
+						$groups_array['ungrouped'][$fkey][]=get_post_meta($flp)[$fkey];
 						echo "<br>";
+						
 					}
 				}
 				echo "<br>Flamingo post Ends<br>";
 			}
-			//echo "<br>flamingo post Ends<br>--------------<br>";
 		}
 	}else{
 		echo "<br>The shortcode parameter 'name=' is required <br>";
