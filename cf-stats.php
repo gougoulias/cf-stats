@@ -97,7 +97,7 @@ function cf_stats_plugin($atts){
 														//print_r(get_post_meta($flp)[$fkeygrouped]);
 														//echo '</br>';
 														$valuegrouped=get_post_meta($flp)[$fkeygrouped][0];
-														$regex_value='/("[\w\d\sαβγδεζηθικλμνξοπρστυφχψωςΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩάέήίόύώΆΈΉΊΌΎΏϊϋΪΫ&?-?-]+")/i';
+														$regex_value='/("[\w\d\sαβγδεζηθικλμνξοπρστυφχψωςΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩάέήίόύώΆΈΉΊΌΎΏϊϋΪΫ&+?-?-]+")/i';
 														preg_match_all($regex_value, $valuegrouped, $matches_grouped);
 														$all_matches_grouped= implode(", ",$matches_grouped[1]);
 														$groups_array[$group_name][$newvalue][$fkeygrouped][]=$all_matches_grouped;
@@ -113,7 +113,7 @@ function cf_stats_plugin($atts){
 								//print_r(get_post_meta($flp)[$fkey]);
 								//echo '</br>';
 								$value_ungrouped=get_post_meta($flp)[$fkey][0];
-								$regex_value='/("[\w\d\sαβγδεζηθικλμνξοπρστυφχψωςΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩάέήίόύώΆΈΉΊΌΎΏϊϋΪΫ&?-?-]+")/i';
+								$regex_value='/("[\w\d\sαβγδεζηθικλμνξοπρστυφχψωςΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩάέήίόύώΆΈΉΊΌΎΏϊϋΪΫ&+?-?-]+")/i';
 								preg_match_all($regex_value, $value_ungrouped, $matches_ungrouped);
 								$all_matches_ungrouped=implode(", ", $matches_ungrouped[1]);
 								$groups_array['ungrouped']['ungrouped'][$fkey][]=$all_matches_ungrouped;
