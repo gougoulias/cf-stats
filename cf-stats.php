@@ -83,7 +83,7 @@ function cf_stats_plugin($atts){
 										echo '</br>';
 										$valuegrouped=get_post_meta($flp)[$fkeygrouped][0];
 										//yparxei problima an i timi den dinetai me ayti tin morfi opws px to subject i to onoma an ypaxei genika ta text fields
-										$regex_value='/("[a-zA-Z0-9?-?-?+]+")/i';
+										$regex_value='/("[\w\d\sαβγδεζηθικλμνξοπρστυφχψωςΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩάέήίόύώΆΈΉΊΌΎΏϊϋΪΫ&?-?-]+")/i';
 										preg_match_all($regex_value, $valuegrouped, $matches_grouped);
 										$groups_array[$group_name][$newvalue][$fkeygrouped][]=$matches_grouped[1];
 									}
@@ -97,7 +97,7 @@ function cf_stats_plugin($atts){
 						echo '</br>';
 						$value_ungrouped=get_post_meta($flp)[$fkey][0];
 						//yparxei problima an i timi den dinetai me ayti tin morfi opws px to subject i to onoma an ypaxei genika ta text fields
-						$regex_value='/("[a-zA-Z0-9?-?-?+]+")/i';
+						$regex_value='/("[\w\d\sαβγδεζηθικλμνξοπρστυφχψωςΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩάέήίόύώΆΈΉΊΌΎΏϊϋΪΫ&?-?-]+")/i';
 						preg_match_all($regex_value, $value_ungrouped, $matches_ungrouped);
 						$groups_array['ungrouped']['ungrouped'][$fkey][]=$matches_ungrouped[1];
 						echo "<br>";
