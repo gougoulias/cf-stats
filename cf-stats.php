@@ -11,7 +11,8 @@
 function cf_stats_plugin($atts){
  	// built the shorcode attributes
  		// name = the name of the contactform
-		// group = the fileds that need to be grouped
+		// stats = the elemennts that will be countable
+		// group = the fields that need to be grouped
 	extract(shortcode_atts(array(
 		'name'=> '',
 		'stats'=>'',
@@ -91,7 +92,7 @@ function cf_stats_plugin($atts){
 										$newvalue= preg_replace($regex_value, $replacement, $newvalue);
 										//clean the value of not essential elements for the grouping face ends
 										//echo 'kathari timi = ' . $newvalue .'<br>';
-										//second loop of the form fileds starts here
+										//second loop of the form fields starts here
 										foreach ($get_the_keys as $fkeygrouped) {
 											//check if the key is form input field or other type of form information
 											if (preg_match('/_field_/i', $fkeygrouped) ){
