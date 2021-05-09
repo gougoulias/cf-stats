@@ -95,9 +95,9 @@ function cf_stats_plugin($atts){
 										foreach ($get_the_keys as $fkeygrouped) {
 											//check if the key is form input field or other type of form information
 											if (preg_match('/_field_/i', $fkeygrouped) ){
-												foreach ($allstats as $statvalue) {
+												foreach ($allstats as $statvalue_grouped) {
 													$stat_field_grouped='_field_';
-													$stat_field_grouped.=(string)$statvalue;
+													$stat_field_grouped.=(string)$statvalue_grouped;
 													if($fkeygrouped==$stat_field_grouped){ // check if the field is countable or not for the grouped value
 														//echo 'to kleidi einai : ' .$fkeygrouped . '<br>';
 														//print_r(get_post_meta($flp)[$fkeygrouped]);
@@ -113,9 +113,9 @@ function cf_stats_plugin($atts){
 														$all_matches_grouped= explode(", ",$separate_matches_grouped);
 														foreach ($all_matches_grouped as $fin_value_grouped) {
 															// store the grouped values to the array
-															$groups_array[$group_name][$newvalue][$fkeygrouped][]=$fin_value_grouped;
+															$groups_array[$group_name][$newvalue][$statvalue_grouped][]=$fin_value_grouped;
 															//create array and store the count of each values per group
-															$count_grouped[$group_name][$newvalue][$fkeygrouped]=array_count_values($groups_array[$group_name][$newvalue][$fkeygrouped]);
+															$count_grouped[$group_name][$newvalue][$statvalue_grouped]=array_count_values($groups_array[$group_name][$newvalue][$statvalue_grouped]);
 														}
 													}
 												}	
@@ -136,9 +136,9 @@ function cf_stats_plugin($atts){
 								$all_matches_ungrouped=explode(", ",$separate_matches_ungrouped);
 								foreach ($all_matches_ungrouped as $fin_value_ungrouped) {
 									//store the ungrouped values to the array (ungrouped -> ungrouped)
-									$groups_array['ungrouped']['ungrouped'][$fkey][]=$fin_value_ungrouped;
+									$groups_array['ungrouped']['ungrouped'][$statvalue][]=$fin_value_ungrouped;
 									//create array and store the count of each values for ungrouped values
-									$count_ungrouped['ungrouped']['ungrouped'][$fkey]=array_count_values($groups_array['ungrouped']['ungrouped'][$fkey]);
+									$count_ungrouped['ungrouped']['ungrouped'][$statvalue]=array_count_values($groups_array['ungrouped']['ungrouped'][$statvalue]);
 								}
 								//echo "<br>";
 							}
