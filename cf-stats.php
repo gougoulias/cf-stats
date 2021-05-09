@@ -59,7 +59,7 @@ function cf_stats_plugin($atts){
 			
 			//check the form name to start collecting values
 			if ($flamingo_taxonomy_name==$name){
-				echo "<br>Flamingo post start<br>";
+				//Flamingo post start
 				// get all the keys of the flamingo post 
 				$get_the_keys=array_keys(get_post_meta($flp));
 				//print_r($get_the_keys);
@@ -79,8 +79,7 @@ function cf_stats_plugin($atts){
 									$group_field.=(string)$sgroup;
 									//echo $group_field;
 									if($fkey==$group_field){// check if the field is grouped or not
-										//echo " einai group <br>";
-										echo "<br>--------group  ". $group_field ." starts HERE--------------<br>";
+										//echo "<br>--------group  ". $group_field ." starts HERE--------------<br>";
 										$group_name=substr($fkey,7);
 										// get the value of the form field
 										$value=get_post_meta($flp)[$fkey][0];
@@ -109,35 +108,44 @@ function cf_stats_plugin($atts){
 														//clean the value of not essential elements 
 														preg_match_all($regex_value, $valuegrouped, $matches_grouped);
 														//separate multiple values e.g. multiselect or checkbox
-														$all_matches_grouped= implode(", ",$matches_grouped[1]);
-														//store the values to the array
-														$groups_array[$group_name][$newvalue][$fkeygrouped][]=$all_matches_grouped;
+														$separate_matches_grouped= implode(", ",$matches_grouped[1]);
+														//create array for all grouped values
+														$all_matches_grouped= explode(", ",$separate_matches_grouped);
+														foreach ($all_matches_grouped as $fin_value_grouped) {
+															// store the grouped values to the array
+															$groups_array[$group_name][$newvalue][$fkeygrouped][]=$fin_value_grouped;
+															//create array and store the count of each values per group
+															$count_grouped[$group_name][$newvalue][$fkeygrouped]=array_count_values($groups_array[$group_name][$newvalue][$fkeygrouped]);
+														}
 													}
 												}	
 											}
 										}//second loop of the form fiedls ends here
-										echo "<br>--------group ". $group_field ." ENDS HERE--------------<br>";
+										//echo "<br>--------group ". $group_field ." ENDS HERE--------------<br>";
 									}
 								}//end grouping
-
-								//echo 'to kleidi einai : ' .$fkey . '<br>';
 								//print_r(get_post_meta($flp)[$fkey]);
-								//echo '</br>';
 								// get the value of the form field for the ungrouuped value
 								$value_ungrouped=get_post_meta($flp)[$fkey][0];
 								$regex_value='/("[\w\d\sαβγδεζηθικλμνξοπρστυφχψωςΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩάέήίόύώΆΈΉΊΌΎΏϊϋΪΫ&+?-?-]+")/i';
 								//clean the value of not essential elements
 								preg_match_all($regex_value, $value_ungrouped, $matches_ungrouped);
 								//separate multiple values e.g. multiselect or checkbox
-								$all_matches_ungrouped=implode(", ", $matches_ungrouped[1]);
-								//store the values to the array (ungrouped -> ungrouped)
-								$groups_array['ungrouped']['ungrouped'][$fkey][]=$all_matches_ungrouped;
-								echo "<br>";
+								$separate_matches_ungrouped=implode(", ", $matches_ungrouped[1]);
+								//create array for all ungrouped values
+								$all_matches_ungrouped=explode(", ",$separate_matches_ungrouped);
+								foreach ($all_matches_ungrouped as $fin_value_ungrouped) {
+									//store the ungrouped values to the array (ungrouped -> ungrouped)
+									$groups_array['ungrouped']['ungrouped'][$fkey][]=$fin_value_ungrouped;
+									//create array and store the count of each values for ungrouped values
+									$count_ungrouped['ungrouped']['ungrouped'][$fkey]=array_count_values($groups_array['ungrouped']['ungrouped'][$fkey]);
+								}
+								//echo "<br>";
 							}
 						}	
 					}
 				}
-				echo "<br>Flamingo post Ends<br>";
+				// Flamingo post Ends
 			}
 		}
 	}else{
@@ -145,31 +153,25 @@ function cf_stats_plugin($atts){
 		echo "<br>The shortcode parameter 'name=' and 'stats=' is required <br>";
 	}
 	echo 'groups arrays is <br>';
-	//echo'<pre>';
-	print_r($groups_array);
-	//echo'</pre>';
-	// how to count 1st try starts
-	echo '<br>counting starts<br><pre>';
-	foreach ($groups_array as $ga) {
-		//print_r($ga)
-		foreach ($ga as $cgroups){
-			//print_r($cgroups);
-			foreach ($cgroups as $cvalues) {
-				//print_r($cvalues);
-				print_r(array_count_values($cvalues));
-				//  foreach ($cvalues as $cv) {
-				// // 	//print_r($cv);
-				// 	print_r(array_count_values($cv));
-				//  }
-			}	
-		}	
-	}
-
-	//print_r(array_count_values($groups_array));
-	echo '</pre><br>counting ends<br>';
-	// how to count 1st try ends
-	echo "<br>------------<br>";
+	echo'<pre>';
 	//print_r($groups_array);
+	echo'</pre>';
+
+	//couning starts
+	echo '<br>counting  VIEW Starts<br>';
+	echo'<pre> count ungrouped <br>';
+	print_r($count_ungrouped);
+	echo'</pre>';
+	echo'<pre> count grouped <br>';
+	print_r($count_grouped);
+	echo'</pre>';
+	echo '<br>counting VIEW ends<br>';
+	// how to count 1st try ends
+	
+
+	echo "<br>------------<br>";
+	
+	//make the array json format
 	$json_records=json_encode($groups_array);
 	echo 'this is the json :<br>' . $json_records .'<br>';
 }
