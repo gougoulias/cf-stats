@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: CF stats
- * Plugin URI: https://github.com/gougoulias
+ * Plugin URI: https://github.com/gougoulias/cf-stats
  * Description: Contact form 7 submitions by flamingo statistics view.
  * Version: 1.0
  * Author: Giannis Gougoulias
@@ -19,7 +19,8 @@ function cf_stats_plugin($atts){
 	),$atts));
 
 	if ($stats!=null){
-	$allstats=explode(',',$stats);
+		// make an array with all the stats reported in the shortcode parameters
+		$allstats=explode(',',$stats);
 	}
 	
 	$allgroups=explode(',', $group);
@@ -32,7 +33,7 @@ function cf_stats_plugin($atts){
 	}
 
 
-	// check if the name parameter is given in the shortcode
+	// check if the name parameter and the stats parametere is given in the shortcode
 	if ($name!=null && $stats!=null){
 
 		// set up the post arguments to get all the flamingo inbounds port types IDs and store them to flamingo_post variable
@@ -55,56 +56,65 @@ function cf_stats_plugin($atts){
 			//echo "this post belongs to form with name : " . $flamingo_taxonomy_name ;
 			//get taxonomies ends
 			
+			//check the form name to start collecting values
 			if ($flamingo_taxonomy_name==$name){
 				echo "<br>Flamingo post start<br>";
+				// get all the keys of the flamingo post 
 				$get_the_keys=array_keys(get_post_meta($flp));
 				//print_r($get_the_keys);
 				//$isgroup=false;
 				foreach ($get_the_keys as $fkey) {
+					//check if the key is form input field or other type of form information
 					if (preg_match('/_field_/i', $fkey) ){
 
-						//print_r($allstats);
 						foreach ($allstats as $statvalue) {
 							$stat_field='_field_';
 							$stat_field.=(string)$statvalue;
-							if($fkey==$stat_field){ //elegxos an to field prepei na metrithei
+							if($fkey==$stat_field){ // check if the field is countable or not
 								
 								//start grouping
 								foreach ($allgroups as $sgroup) {
 									$group_field='_field_';
 									$group_field.=(string)$sgroup;
 									//echo $group_field;
-									if($fkey==$group_field){//elegxos an anikei se group
+									if($fkey==$group_field){// check if the field is grouped or not
 										//echo " einai group <br>";
 										echo "<br>--------group  ". $group_field ." starts HERE--------------<br>";
 										$group_name=substr($fkey,7);
-										//echo "GROUP NAME = ". $group_name . '<br>';
+										// get the value of the form field
 										$value=get_post_meta($flp)[$fkey][0];
+										//clean the value of not essential elements for the grouping face start
 										$regex_value='(.*:")';
 										$replacement = '$1';
 										$newvalue= preg_replace($regex_value, $replacement, $value);
 										$regex_value='(".*)';
 										$newvalue= preg_replace($regex_value, $replacement, $newvalue);
+										//clean the value of not essential elements for the grouping face ends
 										//echo 'kathari timi = ' . $newvalue .'<br>';
-										//second loop starts here
+										//second loop of the form fileds starts here
 										foreach ($get_the_keys as $fkeygrouped) {
+											//check if the key is form input field or other type of form information
 											if (preg_match('/_field_/i', $fkeygrouped) ){
 												foreach ($allstats as $statvalue) {
 													$stat_field_grouped='_field_';
 													$stat_field_grouped.=(string)$statvalue;
-													if($fkeygrouped==$stat_field_grouped){ //elegxos an to field prepei na metrithei gia ta grouped
+													if($fkeygrouped==$stat_field_grouped){ // check if the field is countable or not for the grouped value
 														//echo 'to kleidi einai : ' .$fkeygrouped . '<br>';
 														//print_r(get_post_meta($flp)[$fkeygrouped]);
 														//echo '</br>';
+														// get the value of the form field for the grouuped value
 														$valuegrouped=get_post_meta($flp)[$fkeygrouped][0];
 														$regex_value='/("[\w\d\sαβγδεζηθικλμνξοπρστυφχψωςΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩάέήίόύώΆΈΉΊΌΎΏϊϋΪΫ&+?-?-]+")/i';
+														//clean the value of not essential elements 
 														preg_match_all($regex_value, $valuegrouped, $matches_grouped);
+														//separate multiple values e.g. multiselect or checkbox
 														$all_matches_grouped= implode(", ",$matches_grouped[1]);
+														//store the values to the array
 														$groups_array[$group_name][$newvalue][$fkeygrouped][]=$all_matches_grouped;
 													}
 												}	
 											}
-										}
+										}//second loop of the form fiedls ends here
 										echo "<br>--------group ". $group_field ." ENDS HERE--------------<br>";
 									}
 								}//end grouping
@@ -112,10 +122,14 @@ function cf_stats_plugin($atts){
 								//echo 'to kleidi einai : ' .$fkey . '<br>';
 								//print_r(get_post_meta($flp)[$fkey]);
 								//echo '</br>';
+								// get the value of the form field for the ungrouuped value
 								$value_ungrouped=get_post_meta($flp)[$fkey][0];
 								$regex_value='/("[\w\d\sαβγδεζηθικλμνξοπρστυφχψωςΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩάέήίόύώΆΈΉΊΌΎΏϊϋΪΫ&+?-?-]+")/i';
+								//clean the value of not essential elements
 								preg_match_all($regex_value, $value_ungrouped, $matches_ungrouped);
+								//separate multiple values e.g. multiselect or checkbox
 								$all_matches_ungrouped=implode(", ", $matches_ungrouped[1]);
+								//store the values to the array (ungrouped -> ungrouped)
 								$groups_array['ungrouped']['ungrouped'][$fkey][]=$all_matches_ungrouped;
 								echo "<br>";
 							}
@@ -126,6 +140,7 @@ function cf_stats_plugin($atts){
 			}
 		}
 	}else{
+		//print message to user to use the shortcode parameters name and stats as they are required
 		echo "<br>The shortcode parameter 'name=' and 'stats=' is required <br>";
 	}
 	echo 'groups arrays is <br>';
