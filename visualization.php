@@ -8,8 +8,9 @@ foreach ($count_ungrouped as $ungrouped1) {
 	foreach ($ungrouped1 as $ungrouped2 ){
 		foreach ($ungrouped2 as $onegroup => $onegroupvalue) {
 			$title=urlencode($onegroup);
-			$random=rand(1, 100000);
-			echo $title .'=>' . $random;
+			//$random=rand(1, 100000);
+			echo $title ;
+			$titlearray[]=$title;
 			$i=0;
 			foreach ($onegroupvalue as $label => $y) {
 				$dataPoints1[$title][$i]["label"]=$label;
@@ -21,7 +22,7 @@ foreach ($count_ungrouped as $ungrouped1) {
 			<script>
 			window.onload = function () {
 			 
-			var chart<?php echo $title; ?> = new CanvasJS.Chart("chartContainer<?php echo $title; ?>", {
+			var chart = new CanvasJS.Chart("chart<?php echo $title; ?>", {
 				animationEnabled: true,
 				theme: "light2",
 				title:{
@@ -52,7 +53,7 @@ foreach ($count_ungrouped as $ungrouped1) {
 					dataPoints: <?php echo json_encode($dataPoints2, JSON_NUMERIC_CHECK); ?>
 				}]
 			});
-			chart<?php echo $title; ?>.render();
+			chart.render();
 			 
 			function toggleDataSeries(e){
 				if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
@@ -61,26 +62,34 @@ foreach ($count_ungrouped as $ungrouped1) {
 				else{
 					e.dataSeries.visible = true;
 				}
-				chart<?php echo $title; ?>.render();
+				chart.render();
 			}
 			 
 			}
 			</script>
-
-			<div id="chartContainer<?php echo $title; ?>" style="height: 370px; width: 100%;"></div>
 			
-
-			<?php
+			<!--<div id="chart<?php echo $title; ?>" style="height: 370px; width: 100%;"></div>-->
 			
+			<?php	
 		}	
 	}
 }
 
 ?>
 
-<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<!--<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>-->
+<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
 
 <?php
+
+foreach ($titlearray as $ta) {
+	print_r($ta);
+	?>
+		<div id="chart<?php echo $ta; ?>" style="height: 370px; width: 100%;"></div>
+	<?php
+}
+
 
 echo'<br>dataPoints<br>';
 
