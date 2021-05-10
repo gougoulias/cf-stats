@@ -152,83 +152,27 @@ function cf_stats_plugin($atts){
 		//print message to user to use the shortcode parameters name and stats as they are required
 		echo "<br>The shortcode parameter 'name=' and 'stats=' is required <br>";
 	}
-	echo 'groups arrays is <br>';
-	echo'<pre>';
+	//echo 'groups arrays is <br>';
+	//echo'<pre>';
 	//print_r($groups_array);
-	echo'</pre>';
+	//echo'</pre>';
 
 	//couning starts
-	echo '<br>counting  VIEW Starts<br>';
-	echo'<pre> count ungrouped <br>';
-	print_r($count_ungrouped);
-	echo'</pre>';
-	echo'<pre> count grouped <br>';
-	print_r($count_grouped);
-	echo'</pre>';
-	echo '<br>counting VIEW ends<br>';
+	//echo '<br>counting  VIEW Starts<br>';
+	//echo'<pre> count ungrouped <br>';
+	//print_r($count_ungrouped);
+	//echo'</pre>';
+	//echo'<pre> count grouped <br>';
+	//print_r($count_grouped);
+	//echo'</pre>';
+	//echo '<br>counting VIEW ends<br>';
 	// how to count 1st try ends
 	
-	
-	//demo array
-	echo "<br>=-=-=-=-=-==-=-=-=-=-DEMO -=-==-=--=-==-=-=--=-=-=-=-=-=-<br>";
-	print_r($count_ungrouped['ungrouped']['ungrouped']);
-	$i=0;
-	foreach ($count_ungrouped as $ungrouped1) {
-		foreach ($ungrouped1 as $ungrouped2 ){
-			foreach ($ungrouped2 as $onegroup) {
-				foreach ($onegroup as $label => $y) {
-					$dataPoints1[$i]["label"]=$label;
-					$dataPoints1[$i]["y"]=$y;
-					$i=$i+1;
-				}
-				break;//prepei na brw pws na to kobw se kathe epanalipsi		
-			}
-		}
-	}
-
-
-	echo'<br>dataPoints1<br>';
-	print_r($dataPoints1);
-
-	echo "<br>";
-	//print_r(array_keys($count_ungrouped['ungrouped']['ungrouped']['age']));
-
-	// $dataPoints1 = array(
-	// 	array("label"=> "2010", "y"=> 36.12),
-	// 	array("label"=> "2011", "y"=> 34.87),
-	// 	array("label"=> "2012", "y"=> 40.30),
-	// 	array("label"=> "2013", "y"=> 35.30),
-	// 	array("label"=> "2014", "y"=> 39.50),
-	// 	array("label"=> "2015", "y"=> 50.82),
-	// 	array("label"=> "2016", "y"=> 74.70)
-	// );
-	// echo "<br>original datapoionts1<br>";
-	// print_r($dataPoints1);
-	// $dataPoints2 = array(
-	// 	array("label"=> "2010", "y"=> 64.61),
-	// 	array("label"=> "2011", "y"=> 70.55),
-	// 	array("label"=> "2012", "y"=> 72.50),
-	// 	array("label"=> "2013", "y"=> 81.30),
-	// 	array("label"=> "2014", "y"=> 63.60),
-	// 	array("label"=> "2015", "y"=> 69.38),
-	// 	array("label"=> "2016", "y"=> 98.70)
-	// );
-
-
-	include('script.php');
-
-	?>
-
-	<div id="chartContainer" style="height: 370px; width: 100%;"></div>
-	<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-
-	<?php
-
-	echo "<br>------------<br>";
+	include('visualization.php');
 	
 	//make the array json format
-	$json_records=json_encode($groups_array);
-	echo 'this is the json :<br>' . $json_records .'<br>';
+	// $json_records=json_encode($groups_array);
+	// echo 'this is the json :<br>' . $json_records .'<br>';
 }
 
 add_shortcode('cf-stats','cf_stats_plugin');
