@@ -1,11 +1,12 @@
 <?php 
 //demo array
 echo "<br>=-=-=-=-=-==-=-=-=-=-DEMO -=-==-=--=-==-=-=--=-=-=-=-=-=-<br>";
-print_r($count_ungrouped['ungrouped']['ungrouped']);
+//print_r($count_ungrouped['ungrouped']['ungrouped']);
 echo "<br>";
 
-foreach ($count_ungrouped as $ungrouped1) {
-	foreach ($ungrouped1 as $ungrouped2 ){
+foreach ($counted as $ungrouped1) {
+	foreach ($ungrouped1 as $ungroupped_value => $ungrouped2 ){
+		echo '<h3>' . $ungroupped_value. '</h3>';
 		foreach ($ungrouped2 as $onegroup => $onegroupvalue) {
 			$title=urlencode($onegroup);
 			//$random=rand(1, 100000);
@@ -22,7 +23,7 @@ foreach ($count_ungrouped as $ungrouped1) {
 			<script>
 			window.onload = function () {
 			 
-			var chart = new CanvasJS.Chart("chart<?php echo $title; ?>", {
+			var chart = new CanvasJS.Chart("chart<?php echo $ungroupped_value . $title ;?>", {
 				animationEnabled: true,
 				theme: "light2",
 				title:{
@@ -68,7 +69,7 @@ foreach ($count_ungrouped as $ungrouped1) {
 			}
 			</script>
 			
-			<!--<div id="chart<?php echo $title; ?>" style="height: 370px; width: 100%;"></div>-->
+			<div id="chart<?php echo $ungroupped_value . $title; ?>" style="height: 370px; width: 100%;"></div>
 			
 			<?php	
 		}	
@@ -83,19 +84,14 @@ foreach ($count_ungrouped as $ungrouped1) {
 
 <?php
 
-foreach ($titlearray as $ta) {
-	print_r($ta);
-	?>
-		<div id="chart<?php echo $ta; ?>" style="height: 370px; width: 100%;"></div>
-	<?php
-}
 
 
-echo'<br>dataPoints<br>';
+
+echo'<br>dataPoints<br><pre>';
 
 print_r($dataPoints1);
 
-echo "<br>";
+echo "</pre><br>";
 //print_r(array_keys($count_ungrouped['ungrouped']['ungrouped']['age']));
 
 // $dataPoints1 = array(

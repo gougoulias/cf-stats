@@ -115,7 +115,7 @@ function cf_stats_plugin($atts){
 															// store the grouped values to the array
 															$groups_array[$group_name][$newvalue][$statvalue_grouped][]=$fin_value_grouped;
 															//create array and store the count of each values per group
-															$count_grouped[$group_name][$newvalue][$statvalue_grouped]=array_count_values($groups_array[$group_name][$newvalue][$statvalue_grouped]);
+															$counted[$group_name][$newvalue][$statvalue_grouped]=array_count_values($groups_array[$group_name][$newvalue][$statvalue_grouped]);
 														}
 													}
 												}	
@@ -138,7 +138,7 @@ function cf_stats_plugin($atts){
 									//store the ungrouped values to the array (ungrouped -> ungrouped)
 									$groups_array['ungrouped']['ungrouped'][$statvalue][]=$fin_value_ungrouped;
 									//create array and store the count of each values for ungrouped values
-									$count_ungrouped['ungrouped']['ungrouped'][$statvalue]=array_count_values($groups_array['ungrouped']['ungrouped'][$statvalue]);
+									$counted['ungrouped']['ungrouped'][$statvalue]=array_count_values($groups_array['ungrouped']['ungrouped'][$statvalue]);
 								}
 								//echo "<br>";
 							}
