@@ -1,10 +1,7 @@
+<!--starting the script-->
 <script>
 	window.onload = function () {
 <?php 
-//demo array
-//echo "<br>=-=-=-=-=-==-=-=-=-=-DEMO -=-==-=--=-==-=-=--=-=-=-=-=-=-<br>";
-//print_r($count_ungrouped['ungrouped']['ungrouped']);
-//echo "<br>";
 
 foreach ($counted as $parrent_group => $grouped1) {
 	//echo '<h2>'.$parrent_group.'</h2>';
@@ -12,6 +9,7 @@ foreach ($counted as $parrent_group => $grouped1) {
 		//echo '<h3>' . $groupped_value. '</h3>';
 		foreach ($grouped2 as $onegroup => $onegroupvalue) {
 			//echo '<h3>' . $onegroup. '</h3>';
+			
 			$i=0;
 			foreach ($onegroupvalue as $label => $y) {
 				$dataPoints1[$parrent_group][$groupped_value][$onegroup][$i]["label"]=$label;
@@ -44,11 +42,11 @@ foreach ($counted as $parrent_group => $grouped1) {
 					dataPoints: <?php echo json_encode($dataPoints1[$parrent_group][$groupped_value][$onegroup], JSON_NUMERIC_CHECK); ?>
 				},{
 					type: "column",
-					name: "Artificial Trees",
+					name: "<?php echo $groupped_value ; ?>",
 					indexLabel: "{y}",
-					yValueFormatString: "$#0.##",
+					yValueFormatString: "#0.##",
 					showInLegend: true,
-					dataPoints: <?php echo json_encode($dataPoints2, JSON_NUMERIC_CHECK); ?>
+					dataPoints: <?php echo json_encode($dataPoints2[$parrent_group][$groupped_value][$onegroup], JSON_NUMERIC_CHECK); ?>
 				}]
 			});
 			chart.render();
@@ -71,15 +69,20 @@ foreach ($counted as $parrent_group => $grouped1) {
 ?>
 }
 </script>
+<!-- script end here -->
 <?php
-echo "<br>=-=-=-=-=-=-loop2=-==--=-==--=-==-</br>";
+echo "<hr>";
+echo "<br>=-=-=-=-=-=-=-=-=-=-=- EXAMPLE OF USE  =-=-==-=-==--==--=-==--=-==-</br>";
 foreach ($counted as $parrent_group => $grouped1) {
 	echo '<h2>'.$parrent_group.'</h2>';
 	foreach ($grouped1 as $groupped_value => $grouped2 ){
 		echo '<h3>' . $groupped_value. '</h3>';
 		foreach ($grouped2 as $onegroup => $onegroupvalue) {
 			echo '<h4>'.$onegroup.'</h4>';
-			?><div id="chart-<?php echo $parrent_group.'-'.$groupped_value.'-'.$onegroup ; ?>" style="height: 370px; width: 100%;"></div><?php
+			?>
+			<!-- create the div for each chart -->
+			<div id="chart-<?php echo $parrent_group.'-'.$groupped_value.'-'.$onegroup ; ?>" style="height: 370px; width: 100%;"></div>
+			<?php
 		}
 	}
 }

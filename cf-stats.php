@@ -168,7 +168,9 @@ function cf_stats_plugin($atts){
 	//echo '<br>counting VIEW ends<br>';
 	// how to count 1st try ends
 	
-	include('visualization.php');
+	//include('visualization.php');
+
+	include('temp_visualization.php');
 	
 	//make the array json format
 	// $json_records=json_encode($groups_array);
