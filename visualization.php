@@ -4,18 +4,16 @@ echo "<br>=-=-=-=-=-==-=-=-=-=-DEMO -=-==-=--=-==-=-=--=-=-=-=-=-=-<br>";
 //print_r($count_ungrouped['ungrouped']['ungrouped']);
 echo "<br>";
 
-foreach ($counted as $ungrouped1) {
-	foreach ($ungrouped1 as $ungroupped_value => $ungrouped2 ){
-		echo '<h3>' . $ungroupped_value. '</h3>';
-		foreach ($ungrouped2 as $onegroup => $onegroupvalue) {
-			$title=urlencode($onegroup);
-			//$random=rand(1, 100000);
-			echo $title ;
-			$titlearray[]=$title;
+foreach ($counted as $parrent_group => $grouped1) {
+	echo '<h2>'.$parrent_group.'</h2>';
+	foreach ($grouped1 as $groupped_value => $grouped2 ){
+		echo '<h3>' . $groupped_value. '</h3>';
+		foreach ($grouped2 as $onegroup => $onegroupvalue) {
+			echo '<h3>' . $onegroup. '</h3>';
 			$i=0;
 			foreach ($onegroupvalue as $label => $y) {
-				$dataPoints1[$title][$i]["label"]=$label;
-				$dataPoints1[$title][$i]["y"]=$y;
+				$dataPoints1[$parrent_group][$groupped_value][$onegroup][$i]["label"]=$label;
+				$dataPoints1[$parrent_group][$groupped_value][$onegroup][$i]["y"]=$y;
 				$i=$i+1;
 			}
 			?>
@@ -23,7 +21,7 @@ foreach ($counted as $ungrouped1) {
 			<script>
 			window.onload = function () {
 			 
-			var chart = new CanvasJS.Chart("chart<?php echo $ungroupped_value . $title ;?>", {
+			var chart = new CanvasJS.Chart("chart-<?php echo $parrent_group.'-'.$groupped_value.'-'.$onegroup ;?>", {
 				animationEnabled: true,
 				theme: "light2",
 				title:{
@@ -40,11 +38,11 @@ foreach ($counted as $ungrouped1) {
 				},
 				data: [{
 					type: "column",
-					name: "Ungrouped",
+					name: "<?php echo $groupped_value ; ?>",
 					indexLabel: "{y}",
 					yValueFormatString: "#0.##",
 					showInLegend: true,
-					dataPoints: <?php echo json_encode($dataPoints1[$title], JSON_NUMERIC_CHECK); ?>
+					dataPoints: <?php echo json_encode($dataPoints1[$parrent_group][$groupped_value][$onegroup], JSON_NUMERIC_CHECK); ?>
 				},{
 					type: "column",
 					name: "Artificial Trees",
@@ -69,7 +67,7 @@ foreach ($counted as $ungrouped1) {
 			}
 			</script>
 			
-			<div id="chart<?php echo $ungroupped_value . $title; ?>" style="height: 370px; width: 100%;"></div>
+			<div id="chart-<?php echo $parrent_group.'-'.$groupped_value.'-'.$onegroup ; ?>" style="height: 370px; width: 100%;"></div>
 			
 			<?php	
 		}	
