@@ -1,15 +1,17 @@
+<script>
+	window.onload = function () {
 <?php 
 //demo array
-echo "<br>=-=-=-=-=-==-=-=-=-=-DEMO -=-==-=--=-==-=-=--=-=-=-=-=-=-<br>";
+//echo "<br>=-=-=-=-=-==-=-=-=-=-DEMO -=-==-=--=-==-=-=--=-=-=-=-=-=-<br>";
 //print_r($count_ungrouped['ungrouped']['ungrouped']);
-echo "<br>";
+//echo "<br>";
 
 foreach ($counted as $parrent_group => $grouped1) {
-	echo '<h2>'.$parrent_group.'</h2>';
+	//echo '<h2>'.$parrent_group.'</h2>';
 	foreach ($grouped1 as $groupped_value => $grouped2 ){
-		echo '<h3>' . $groupped_value. '</h3>';
+		//echo '<h3>' . $groupped_value. '</h3>';
 		foreach ($grouped2 as $onegroup => $onegroupvalue) {
-			echo '<h3>' . $onegroup. '</h3>';
+			//echo '<h3>' . $onegroup. '</h3>';
 			$i=0;
 			foreach ($onegroupvalue as $label => $y) {
 				$dataPoints1[$parrent_group][$groupped_value][$onegroup][$i]["label"]=$label;
@@ -17,9 +19,6 @@ foreach ($counted as $parrent_group => $grouped1) {
 				$i=$i+1;
 			}
 			?>
-
-			<script>
-			window.onload = function () {
 			 
 			var chart = new CanvasJS.Chart("chart-<?php echo $parrent_group.'-'.$groupped_value.'-'.$onegroup ;?>", {
 				animationEnabled: true,
@@ -64,13 +63,24 @@ foreach ($counted as $parrent_group => $grouped1) {
 				chart.render();
 			}
 			 
-			}
-			</script>
-			
-			<div id="chart-<?php echo $parrent_group.'-'.$groupped_value.'-'.$onegroup ; ?>" style="height: 370px; width: 100%;"></div>
-			
 			<?php	
 		}	
+	}
+}
+
+?>
+}
+</script>
+<?php
+echo "<br>=-=-=-=-=-=-loop2=-==--=-==--=-==-</br>";
+foreach ($counted as $parrent_group => $grouped1) {
+	echo '<h2>'.$parrent_group.'</h2>';
+	foreach ($grouped1 as $groupped_value => $grouped2 ){
+		echo '<h3>' . $groupped_value. '</h3>';
+		foreach ($grouped2 as $onegroup => $onegroupvalue) {
+			echo '<h4>'.$onegroup.'</h4>';
+			?><div id="chart-<?php echo $parrent_group.'-'.$groupped_value.'-'.$onegroup ; ?>" style="height: 370px; width: 100%;"></div><?php
+		}
 	}
 }
 
@@ -86,9 +96,7 @@ foreach ($counted as $parrent_group => $grouped1) {
 
 
 echo'<br>dataPoints<br><pre>';
-
-print_r($dataPoints1);
-
+//print_r($dataPoints1);
 echo "</pre><br>";
 //print_r(array_keys($count_ungrouped['ungrouped']['ungrouped']['age']));
 
