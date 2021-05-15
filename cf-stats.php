@@ -22,12 +22,22 @@ function cf_stats_plugin($atts){
 	if ($stats!=null){
 		// make an array with all the stats reported in the shortcode parameters
 		$allstats=explode(',',$stats);
+		//make second array for the stats to add later the grouped ones
+		$allstats_plus_groupped=explode(',',$stats);
 	}
 	
 	if ($group!=null){
 		//make an array with all the groups reported in the shortcode parameters
 		$allgroups=explode(',', $group);
 	}
+
+	//adding the grouped one stats to the allstatsplus grouped to be counted too regardind if they will be shown or not STARTS
+	foreach ($allgroups as $groupkey => $groupvalue) {
+		$allstats_plus_groupped[]=$groupvalue;
+	}
+	$allstats_plus_groupped=array_unique($allstats_plus_groupped);
+	//print_r($allstats_plus_groupped);
+	//adding the grouped one stats to the allstatsplus grouped to be counted too regardind if they will be shown or not ENDS
 
 	// check if the name parameter and the stats parametere is given in the shortcode
 	if ($name!=null && $stats!=null){
@@ -63,7 +73,7 @@ function cf_stats_plugin($atts){
 					//check if the key is form input field or other type of form information
 					if (preg_match('/_field_/i', $fkey) ){
 
-						foreach ($allstats as $statvalue) {
+						foreach ($allstats_plus_groupped as $statvalue) {
 							$stat_field='_field_';
 							$stat_field.=(string)$statvalue;
 							if($fkey==$stat_field){ // check if the field is countable or not
@@ -90,7 +100,7 @@ function cf_stats_plugin($atts){
 											foreach ($get_the_keys as $fkeygrouped) {
 												//check if the key is form input field or other type of form information
 												if (preg_match('/_field_/i', $fkeygrouped) ){
-													foreach ($allstats as $statvalue_grouped) {
+													foreach ($allstats_plus_groupped as $statvalue_grouped) {
 														$stat_field_grouped='_field_';
 														$stat_field_grouped.=(string)$statvalue_grouped;
 														if($fkeygrouped==$stat_field_grouped){ // check if the field is countable or not for the grouped value

@@ -40,16 +40,18 @@ $all_questions_unique=array_unique($allquestions);
 // // print_r($all_groups_unique);
 // foreach ($all_questions_unique as $questionkey => $questionvalue) {
 // 	//echo 'edw arxizei to chart' ;
-// 	echo '<br>1. question : '. $questionvalue;
-// 	foreach ($all_groups_unique as $groupkey => $groupvalue) {
-// 		//echo "edw arxizei to kathe group loop  ";
-// 		echo '<br>2. group : '. $groupvalue;
-// 		echo '<br> this is the final: <br> ' ;
-// 		print_r($dataPoints[$groupvalue][$questionvalue]);
-// 		//echo "edw teleiwnei to kathe group loop  ";
+// 	if (in_array($questionvalue, $allstats)){
+// 		echo '<br>1. question : '. $questionvalue;
+// 		foreach ($all_groups_unique as $groupkey => $groupvalue) {
+// 			//echo "edw arxizei to kathe group loop  ";
+// 			echo '<br>2. group : '. $groupvalue;
+// 			echo '<br> this is the final: <br> ' ;
+// 			print_r($dataPoints[$groupvalue][$questionvalue]);
+// 			//echo "edw teleiwnei to kathe group loop  ";
 
+// 		}
+// 		//echo 'edw teleiwnei  to chart' ;
 // 	}
-// 	//echo 'edw teleiwnei  to chart' ;
 // }
 // testing purposes only ENDS
 ?>
@@ -62,61 +64,63 @@ $all_questions_unique=array_unique($allquestions);
 <?php 
 
 foreach ($all_questions_unique as $questionkey => $questionvalue) {
-	?>
-	 
-	var chart<?php echo $questionvalue ;?> = new CanvasJS.Chart("chart-<?php echo $questionvalue ;?>", {
-		animationEnabled: true,
-		theme: "light2",
-		title:{
-			text: "<?php echo $questionvalue; ?>"
-		},
-		axisY:{
-			includeZero: true
-		},
-		legend:{
-			cursor: "pointer",
-			verticalAlign: "center",
-			horizontalAlign: "right",
-			itemclick: toggleDataSeries<?php echo $questionvalue ;?>
-		},
-		data: [
-			<?php
-			foreach ($all_groups_unique as $groupkey => $groupvalue) {
-				if ($groupvalue=='ungrouped'){
-					$groupvaluetitle='Συνολικές απαντήσεις';
-				}else{
-					$groupvaluetitle=$groupvalue;
-				}
-		 		 ?>
-				{
-					type: "column",
-					name: "<?php echo $groupvaluetitle ; ?>",
-					indexLabel: "{y}",
-					yValueFormatString: "#0.##",
-					showInLegend: true,
-					//if the group value title is not the total make it non visible by default
-					<?php if  ($groupvaluetitle!='Συνολικές απαντήσεις'){ ?>
-						visible: false,
-					<?php } ?>
-					dataPoints: <?php echo json_encode($dataPoints[$groupvalue][$questionvalue], JSON_NUMERIC_CHECK); ?>
-				},
-				<?php		
-			} ?>
-		]
-	});
-	chart<?php echo $questionvalue ;?>.render();
-	 
-	function toggleDataSeries<?php echo $questionvalue ;?>(e){
-		if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-			e.dataSeries.visible = false;
-		}
-		else{
-			e.dataSeries.visible = true;
-		}
+	if (in_array($questionvalue, $allstats)){ ////checks if the question is going to be viewable or if it is used only for groupping
+		?>
+		 
+		var chart<?php echo $questionvalue ;?> = new CanvasJS.Chart("chart-<?php echo $questionvalue ;?>", {
+			animationEnabled: true,
+			theme: "light2",
+			title:{
+				text: "<?php echo $questionvalue; ?>"
+			},
+			axisY:{
+				includeZero: true
+			},
+			legend:{
+				cursor: "pointer",
+				verticalAlign: "center",
+				horizontalAlign: "right",
+				itemclick: toggleDataSeries<?php echo $questionvalue ;?>
+			},
+			data: [
+				<?php
+				foreach ($all_groups_unique as $groupkey => $groupvalue) {
+					if ($groupvalue=='ungrouped'){
+						$groupvaluetitle='Συνολικές απαντήσεις';
+					}else{
+						$groupvaluetitle=$groupvalue;
+					}
+			 		 ?>
+					{
+						type: "column",
+						name: "<?php echo $groupvaluetitle ; ?>",
+						indexLabel: "{y}",
+						yValueFormatString: "#0.##",
+						showInLegend: true,
+						//if the group value title is not the total make it non visible by default
+						<?php if  ($groupvaluetitle!='Συνολικές απαντήσεις'){ ?>
+							visible: false,
+						<?php } ?>
+						dataPoints: <?php echo json_encode($dataPoints[$groupvalue][$questionvalue], JSON_NUMERIC_CHECK); ?>
+					},
+					<?php		
+				} ?>
+			]
+		});
 		chart<?php echo $questionvalue ;?>.render();
+		 
+		function toggleDataSeries<?php echo $questionvalue ;?>(e){
+			if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+				e.dataSeries.visible = false;
+			}
+			else{
+				e.dataSeries.visible = true;
+			}
+			chart<?php echo $questionvalue ;?>.render();
+		}
+		 
+		<?php	
 	}
-	 
-	<?php	
 }
 
 ?>
@@ -128,10 +132,12 @@ foreach ($all_questions_unique as $questionkey => $questionvalue) {
 
 //create the loop for all divs the charts will be shown STARTS
 foreach ($all_questions_unique as $questionkey => $questionvalue) {
-	?>
-	<!-- create the div for each chart -->
-	<div id="chart-<?php echo $questionvalue ; ?>" style="height: 370px; width: 100%;"></div>
-	<?php
+	if (in_array($questionvalue, $allstats)){ //checks if the question is going to be viewable or if it is used only for groupping
+		?>
+		<!-- create the div for each chart -->
+		<div id="chart-<?php echo $questionvalue ; ?>" style="height: 370px; width: 100%;"></div>
+		<?php
+	}
 }
 //create the loop for all divs the charts will be shown ENDS
 ?>
