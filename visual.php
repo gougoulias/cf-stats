@@ -67,7 +67,7 @@ foreach ($all_questions_unique as $questionkey => $questionvalue) {
 	if (in_array($questionvalue, $allstats)){ ////checks if the question is going to be viewable or if it is used only for groupping
 		?>
 		 
-		var chart<?php echo $questionvalue ;?> = new CanvasJS.Chart("chart-<?php echo $questionvalue ;?>", {
+		var chart<?php echo str_replace('-','',$questionvalue) ;?> = new CanvasJS.Chart("chart-<?php echo $questionvalue ;?>", {
 			animationEnabled: true,
 			theme: "light2",
 			title:{
@@ -80,7 +80,7 @@ foreach ($all_questions_unique as $questionkey => $questionvalue) {
 				cursor: "pointer",
 				verticalAlign: "center",
 				horizontalAlign: "right",
-				itemclick: toggleDataSeries<?php echo $questionvalue ;?>
+				itemclick: toggleDataSeries<?php echo str_replace('-','',$questionvalue) ;?>
 			},
 			data: [
 				<?php
@@ -107,16 +107,16 @@ foreach ($all_questions_unique as $questionkey => $questionvalue) {
 				} ?>
 			]
 		});
-		chart<?php echo $questionvalue ;?>.render();
+		chart<?php echo str_replace('-','',$questionvalue) ;?>.render();
 		 
-		function toggleDataSeries<?php echo $questionvalue ;?>(e){
+		function toggleDataSeries<?php echo str_replace('-','',$questionvalue) ;?>(e){
 			if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
 				e.dataSeries.visible = false;
 			}
 			else{
 				e.dataSeries.visible = true;
 			}
-			chart<?php echo $questionvalue ;?>.render();
+			chart<?php echo str_replace('-','',$questionvalue) ;?>.render();
 		}
 		 
 		<?php	
