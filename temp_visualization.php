@@ -1,22 +1,26 @@
 <?php
+
 $group_count=0;
 $max_final_questions=0;
 foreach ($counted as $parrent_group => $grouped1) {
-	echo '<h3>'.$parrent_group.'</h3>';
+	//echo '<h3>'.$parrent_group.'</h3>';
 	foreach ($grouped1 as $groupped_value => $grouped2 ){
-		echo '<p>' . $groupped_value. '</p>';
+		//echo '<p>' . $groupped_value. '</p>';
 		$group_count=$group_count+1;
 		$final_questions=0;
 		foreach ($grouped2 as $onegroup => $onegroupvalue) {
-			echo '<small>'.$onegroup.'</small> | ';
+			//echo '<small>'.$onegroup.'</small> | ';
 			$final_questions=$final_questions+1;
 			$i=0;//counter for the answers
 			(string)$group_name='groupname';
 			(string)$group_name=(string)$group_name.(string)$group_count;
-			//echo $group_name;
+			// echo 'group name is : ' .$group_name;
+			// echo ' | onegroup is : ' . $onegroup;
 			foreach ($onegroupvalue as $label => $y) {
 					$dataPoints[$group_name][$parrent_group][$groupped_value][$onegroup][$i]["label"]=$label;
 					$dataPoints[$group_name][$parrent_group][$groupped_value][$onegroup][$i]["y"]=$y;
+					$dataPointsdemo[$groupped_value][$onegroup][$i]["label"]=$label;
+					$dataPointsdemo[$groupped_value][$onegroup][$i]["y"]=$y;
 					$i=$i+1;
 			}
 		}
@@ -25,41 +29,85 @@ foreach ($counted as $parrent_group => $grouped1) {
 		}
 	}
 }
-echo '<pre>';
+echo 'DATAPOINTS<pre>';
 //print_r($dataPoints);
 echo '</pre>';
 // echo "<br>";
 // echo "<hr>";
 // print_r($dataPointsGrouped);
 echo "group count = " .$group_count ."<br>";
-print_r( $datapoionts1);
-print_r( $datapoionts2);
 echo "max final questions = " . $max_final_questions; // autos einai o arithmos twn charts pou theleis oses diladi einai oi megistes erwtiseis
 
 //try 1
 
-foreach ($dataPoints as $dPkey => $dPvalue) {
+// foreach ($dataPoints as $dPkey => $dPvalue) {
+// 	foreach ($dPvalue as $groupnamekey => $groupnamevalue) {
+// 		if($groupnamekey=='ungrouped'){
+// 			foreach ($groupnamevalue as $gnvkey => $gnvvalue) {
+// 				foreach ($gnvvalue as $lastkey => $lastvalue) {
+// 					echo "<hr>";
+// 					echo 'data ungrouped' ;
+// 					print_r($lastvalue);
+// 				}	
+// 			}
+// 		}else{
+// 			foreach ($groupnamevalue as $gnvkey => $gnvvalue) {
+// 				foreach ($gnvvalue as $lastkey => $lastvalue) {
+// 					echo "<hr>";
+// 					echo 'data ungrouped' ;
+// 					print_r($lastvalue);
+// 				}	
+// 			}
+// 		}
+// 	}
+// }
+
+//try 2
+
+foreach ($dataPointsdemo as $dPkey => $dPvalue) {
+	//echo "- 1." . $dPkey . $dPvalue; 
+	$all_groups[]=$dPkey;
 	foreach ($dPvalue as $groupnamekey => $groupnamevalue) {
-		if($groupnamekey=='ungrouped'){
-			foreach ($groupnamevalue as $gnvkey => $gnvvalue) {
-				foreach ($gnvvalue as $lastkey => $lastvalue) {
-					echo "<hr>";
-					echo 'data ungrouped' ;
-					print_r($lastvalue);
-				}	
-			}
-		}else{
-			foreach ($groupnamevalue as $gnvkey => $gnvvalue) {
-				foreach ($gnvvalue as $lastkey => $lastvalue) {
-					echo "<hr>";
-					echo 'data ungrouped' ;
-					print_r($lastvalue);
-				}	
-			}
+		//echo "- 2." .$groupnamekey;
+		$allquestions[]=$groupnamekey;
+		foreach ($groupnamevalue as $gnvkey => $gnvvalue) {
+			//echo "- 3." .$gnvkey . $gnvvalue;
+			foreach ($gnvvalue as $lastkey => $lastvalue) {
+				//	echo "<hr>";
+				//echo '-4 ' . $lastkey . $lastvalue;
+				//echo "- 1." . $dPkey ." - 2." .$groupnamekey. " - 3." .$gnvkey." - 4." .$lastvalue;
+				//echo "<br>";
+			}	
 		}
+
 	}
 }
+echo "<br> all groups : ";
+print_r($allgroups);
+$all_groups_unique=array_unique($all_groups);
+echo "<br> all groups unique: ";
+print_r($all_groups_unique);
+$all_questions_unique=array_unique($allquestions);
+print_r($all_questions_unique);
 
+
+// echo "<br>unique groups";
+// print_r($all_groups_unique);
+foreach ($all_questions_unique as $questionkey => $questionvalue) {
+	//echo 'edw arxizei to chart' ;
+	echo '<br>1. question : '. $questionvalue;
+	foreach ($all_groups_unique as $groupkey => $groupvalue) {
+		//echo "edw arxizei to kathe group loop  ";
+		echo '<br>2. group : '. $groupvalue;
+		echo '<br> this is the final: <br> ' ;
+		print_r($dataPointsdemo[$groupvalue][$questionvalue]);
+		//echo "edw teleiwnei to kathe group loop  ";
+
+	}
+	//echo 'edw teleiwnei  to chart' ;
+}
+
+//try 2 ends
 ?>
 
 

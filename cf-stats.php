@@ -152,10 +152,10 @@ function cf_stats_plugin($atts){
 		//print message to user to use the shortcode parameters name and stats as they are required
 		echo "<br>The shortcode parameter 'name=' and 'stats=' is required <br>";
 	}
-	//echo 'groups arrays is <br>';
-	//echo'<pre>';
-	//print_r($groups_array);
-	//echo'</pre>';
+	echo 'groups arrays is <br>';
+	echo'<pre>';
+	print_r($groups_array);
+	echo'</pre>';
 
 	//couning starts
 	//echo '<br>counting  VIEW Starts<br>';
@@ -169,8 +169,8 @@ function cf_stats_plugin($atts){
 	// how to count 1st try ends
 	
 	//include('visualization.php');
-
-	include('temp_visualization.php');
+	//include('temp_visualization.php');
+	include('visual.php');
 	
 	//make the array json format
 	// $json_records=json_encode($groups_array);
