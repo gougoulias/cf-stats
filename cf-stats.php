@@ -142,7 +142,7 @@ function cf_stats_plugin($atts){
 					}
 				}
 				// Flamingo post Ends
-			}
+			}// end if for check name
 		}
 	}else{
 		//print message to user to use the shortcode parameters name and stats as they are required
@@ -157,8 +157,6 @@ function cf_stats_plugin($atts){
 	// $json_records=json_encode($groups_array);
 	// echo 'this is the json :<br>' . $json_records .'<br>';
 
-	//include('visualization.php');
-	//include('temp_visualization.php');
 	include('visual.php');
 	
 }

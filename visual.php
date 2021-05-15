@@ -117,6 +117,9 @@ foreach ($all_questions_unique as $questionkey => $questionvalue) {
 					indexLabel: "{y}",
 					yValueFormatString: "#0.##",
 					showInLegend: true,
+					<?php if  ($groupvaluetitle!='Συνολικές απαντήσεις'){ ?>
+						visible: false,
+					<?php } ?>
 					dataPoints: <?php echo json_encode($dataPointsdemo[$groupvalue][$questionvalue], JSON_NUMERIC_CHECK); ?>
 				},
 				<?php		
