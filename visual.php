@@ -110,12 +110,15 @@ foreach ($all_questions_unique as $questionkey => $questionvalue) {
 		chart<?php echo str_replace('-','',$questionvalue) ;?>.render();
 		 
 		function toggleDataSeries<?php echo str_replace('-','',$questionvalue) ;?>(e){
-			if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-				e.dataSeries.visible = false;
-			}
-			else{
-				e.dataSeries.visible = true;
-			}
+			// create loop for each group so se visible only the selected one and hide others
+			<?php foreach ($all_groups_unique as $groupnumber => $groupname) { ?>
+				//console.log("epanalipsi" + <?php echo $groupnumber ?> );
+				if (e.dataSeries.name=== e.chart.options.data[<?php echo $groupnumber; ?>].name){
+					e.chart.options.data[<?php echo $groupnumber; ?>].visible = true;
+				}else{
+					e.chart.options.data[<?php echo $groupnumber ; ?>].visible = false;
+				}
+			<?php } ?>
 			chart<?php echo str_replace('-','',$questionvalue) ;?>.render();
 		}
 		 
