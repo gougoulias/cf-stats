@@ -8,8 +8,9 @@ foreach ($counted as $parrent_group => $grouped1) {
 		foreach ($grouped2 as $onegroup => $onegroupvalue) {
 			$i=0;//counter for the answers
 			foreach ($onegroupvalue as $label => $y) {
-					$dataPoints[$groupped_value][$onegroup][$i]["label"]=$label;
-					$dataPoints[$groupped_value][$onegroup][$i]["y"]=$y;
+				//preg replace special characters with space to prevent the brake of the script bellow
+					$dataPoints[$groupped_value][$onegroup][$i]["label"]=preg_replace('/[\'?\/\(\)\[\];]/', '', $label);
+					$dataPoints[$groupped_value][$onegroup][$i]["y"]=preg_replace('/[\'?\/\(\)\[\];]/', '', $y);
 					$i=$i+1;
 			}
 		}
@@ -36,8 +37,8 @@ $all_questions_unique=array_unique($allquestions);
 
 
 // testing purposes only STARTS
-// // echo "<br>unique groups";
-// // print_r($all_groups_unique);
+// echo "<br>unique groups";
+// print_r($all_groups_unique);
 // foreach ($all_questions_unique as $questionkey => $questionvalue) {
 // 	//echo 'edw arxizei to chart' ;
 // 	if (in_array($questionvalue, $allstats)){

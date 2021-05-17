@@ -109,7 +109,7 @@ function cf_stats_plugin($atts){
 															//echo '</br>';
 															// get the value of the form field for the grouuped value
 															$valuegrouped=get_post_meta($flp)[$fkeygrouped][0];
-															$regex_value='/("[\w\d\sαβγδεζηθικλμνξοπρστυφχψωςΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩάέήίόύώΆΈΉΊΌΎΏϊϋΪΫ&+?-?-]+")/i';
+															$regex_value='/("[\w\d\sαβγδεζηθικλμνξοπρστυφχψωςΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩάέήίόύώΆΈΉΊΌΎΏϊϋΪΫ&+?-?-?\/?\'?\.?\(?\)?\;?\[]+")/i';
 															//clean the value of not essential elements 
 															preg_match_all($regex_value, $valuegrouped, $matches_grouped);
 															//separate multiple values e.g. multiselect or checkbox
@@ -133,7 +133,7 @@ function cf_stats_plugin($atts){
 								//print_r(get_post_meta($flp)[$fkey]);
 								// get the value of the form field for the ungrouuped value
 								$value_ungrouped=get_post_meta($flp)[$fkey][0];
-								$regex_value='/("[\w\d\sαβγδεζηθικλμνξοπρστυφχψωςΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩάέήίόύώΆΈΉΊΌΎΏϊϋΪΫ&+?-?-]+")/i';
+								$regex_value='/("[\w\d\sαβγδεζηθικλμνξοπρστυφχψωςΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩάέήίόύώΆΈΉΊΌΎΏϊϋΪΫ&+?-?-?\/?\'?\.?\(?\)?\;?\[]+")/i';
 								//clean the value of not essential elements
 								preg_match_all($regex_value, $value_ungrouped, $matches_ungrouped);
 								//separate multiple values e.g. multiselect or checkbox
@@ -154,6 +154,12 @@ function cf_stats_plugin($atts){
 				// Flamingo post Ends
 			}// end if for check name
 		}
+		//check if there are sumbited values and include visual php else prints error
+		if($get_the_keys){
+			include('visual.php');
+		}else{
+			echo "The are no submited values";
+		}	
 	}else{
 		//print message to user to use the shortcode parameters name and stats as they are required
 		echo "<br>The shortcode parameter 'name=' and 'stats=' is required <br>";
@@ -167,7 +173,7 @@ function cf_stats_plugin($atts){
 	// $json_records=json_encode($groups_array);
 	// echo 'this is the json :<br>' . $json_records .'<br>';
 
-	include('visual.php');
+	
 	
 }
 
