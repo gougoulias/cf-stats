@@ -157,6 +157,7 @@ function cf_stats_plugin($atts){
 		//check if there are sumbited values and include visual php else prints error
 		if($get_the_keys){
 			include('visual.php');
+			//include('visual_test.php');
 		}else{
 			echo "The are no submited values";
 		}	

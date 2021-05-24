@@ -37,9 +37,17 @@ $all_questions_unique=array_unique($allquestions);
 
 
 // testing purposes only STARTS
-// echo "<br>unique groups";
+// echo "<br>unique questions <br>";
+// print_r($all_questions_unique);
+// echo "<br>";
+// echo "<br>all stats<br>";
+// print_r($allstats);
+// echo "<br>";
+// echo "<br>unique groups <br>";
 // print_r($all_groups_unique);
-// foreach ($all_questions_unique as $questionkey => $questionvalue) {
+// echo "<br>";
+// // foreach ($all_questions_unique as $questionkey => $questionvalue) {
+// foreach ($allstats as $questionkey => $questionvalue) {
 // 	//echo 'edw arxizei to chart' ;
 // 	if (in_array($questionvalue, $allstats)){
 // 		echo '<br>1. question : '. $questionvalue;
@@ -64,67 +72,66 @@ $all_questions_unique=array_unique($allquestions);
 	window.onload = function () {
 <?php 
 
-foreach ($all_questions_unique as $questionkey => $questionvalue) {
-	if (in_array($questionvalue, $allstats)){ ////checks if the question is going to be viewable or if it is used only for groupping
-		?>
-		 
-		var chart<?php echo str_replace('-','',$questionvalue) ;?> = new CanvasJS.Chart("chart-<?php echo $questionvalue ;?>", {
-			animationEnabled: true,
-			theme: "light2",
-			title:{
-				text: "<?php echo $questionvalue; ?>"
-			},
-			axisY:{
-				includeZero: true
-			},
-			legend:{
-				cursor: "pointer",
-				verticalAlign: "center",
-				horizontalAlign: "right",
-				itemclick: toggleDataSeries<?php echo str_replace('-','',$questionvalue) ;?>
-			},
-			data: [
-				<?php
-				foreach ($all_groups_unique as $groupkey => $groupvalue) {
-					if ($groupvalue=='ungrouped'){
-						$groupvaluetitle='Συνολικές απαντήσεις';
-					}else{
-						$groupvaluetitle=$groupvalue;
-					}
-			 		 ?>
-					{
-						type: "column",
-						name: "<?php echo $groupvaluetitle ; ?>",
-						indexLabel: "{y}",
-						yValueFormatString: "#0.##",
-						showInLegend: true,
-						//if the group value title is not the total make it non visible by default
-						<?php if  ($groupvaluetitle!='Συνολικές απαντήσεις'){ ?>
-							visible: false,
-						<?php } ?>
-						dataPoints: <?php echo json_encode($dataPoints[$groupvalue][$questionvalue], JSON_NUMERIC_CHECK); ?>
-					},
-					<?php		
-				} ?>
-			]
-		});
-		chart<?php echo str_replace('-','',$questionvalue) ;?>.render();
-		 
-		function toggleDataSeries<?php echo str_replace('-','',$questionvalue) ;?>(e){
-			// create loop for each group so se visible only the selected one and hide others
-			<?php foreach ($all_groups_unique as $groupnumber => $groupname) { ?>
-				//console.log("epanalipsi" + <?php echo $groupnumber ?> );
-				if (e.dataSeries.name=== e.chart.options.data[<?php echo $groupnumber; ?>].name){
-					e.chart.options.data[<?php echo $groupnumber; ?>].visible = true;
+foreach ($allstats as $questionkey => $questionvalue) {	
+	?>
+	 
+	var chart<?php echo str_replace('-','',$questionvalue) ;?> = new CanvasJS.Chart("chart-<?php echo $questionvalue ;?>", {
+		animationEnabled: true,
+		theme: "light2",
+		title:{
+			text: "<?php echo $questionvalue; ?>"
+		},
+		axisY:{
+			includeZero: true
+		},
+		legend:{
+			cursor: "pointer",
+			verticalAlign: "center",
+			horizontalAlign: "right",
+			itemclick: toggleDataSeries<?php echo str_replace('-','',$questionvalue) ;?>
+		},
+		data: [
+			<?php
+			foreach ($all_groups_unique as $groupkey => $groupvalue) {
+				if ($groupvalue=='ungrouped'){
+					$groupvaluetitle='Συνολικές απαντήσεις';
 				}else{
-					e.chart.options.data[<?php echo $groupnumber ; ?>].visible = false;
+					$groupvaluetitle=$groupvalue;
 				}
-			<?php } ?>
-			chart<?php echo str_replace('-','',$questionvalue) ;?>.render();
-		}
-		 
-		<?php	
+		 		 ?>
+				{
+					type: "column",
+					name: "<?php echo $groupvaluetitle ; ?>",
+					indexLabel: "{y}",
+					yValueFormatString: "#0.##",
+					showInLegend: true,
+					//if the group value title is not the total make it non visible by default
+					<?php if  ($groupvaluetitle!='Συνολικές απαντήσεις'){ ?>
+						visible: false,
+					<?php } ?>
+					dataPoints: <?php echo json_encode($dataPoints[$groupvalue][$questionvalue], JSON_NUMERIC_CHECK); ?>
+				},
+				<?php		
+			} ?>
+		]
+	});
+	chart<?php echo str_replace('-','',$questionvalue) ;?>.render();
+	 
+	function toggleDataSeries<?php echo str_replace('-','',$questionvalue) ;?>(e){
+		// create loop for each group so se visible only the selected one and hide others
+		<?php foreach ($all_groups_unique as $groupnumber => $groupname) { ?>
+			//console.log("epanalipsi" + <?php echo $groupnumber ?> );
+			if (e.dataSeries.name=== e.chart.options.data[<?php echo $groupnumber; ?>].name){
+				e.chart.options.data[<?php echo $groupnumber; ?>].visible = true;
+			}else{
+				e.chart.options.data[<?php echo $groupnumber ; ?>].visible = false;
+			}
+		<?php } ?>
+		chart<?php echo str_replace('-','',$questionvalue) ;?>.render();
 	}
+	 
+	<?php	
+	
 }
 
 ?>
@@ -135,14 +142,10 @@ foreach ($all_questions_unique as $questionkey => $questionvalue) {
 
 
 //create the loop for all divs the charts will be shown STARTS
-foreach ($all_questions_unique as $questionkey => $questionvalue) {
-	if (in_array($questionvalue, $allstats)){ //checks if the question is going to be viewable or if it is used only for groupping
-		?>
-		<!-- create the div for each chart -->
-		<div id="chart-<?php echo $questionvalue ; ?>" style="height: 370px; width: 100%;"></div>
-		<?php
-	}
-}
+foreach ($allstats as $questionkey => $questionvalue) { ?>
+	<!-- create the div for each chart -->
+	<div id="chart-<?php echo $questionvalue ; ?>" style="height: 370px; width: 100%;"></div>
+<?php }
 //create the loop for all divs the charts will be shown ENDS
 ?>
 
