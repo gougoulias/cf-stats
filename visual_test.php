@@ -37,7 +37,45 @@ $all_questions_unique=array_unique($allquestions);
 
 
 // testing purposes only STARTS
-// you must find a way to get all the possible anwers and create the script
+$args =array(
+	'post_type'=> 'wpcf7_contact_form',
+	'fields'=> 'ids',
+	'nopaging'=> true,
+);
+$all_forms=get_posts($args);
+
+foreach ($all_forms as $cf7form) {
+	//echo get_the_title($cf7form);
+	if(get_the_title($cf7form)==$name){
+		$ContactForm = WPCF7_ContactForm::get_instance( $cf7form );
+		$form_fields = $ContactForm->scan_form_tags();
+	}
+}
+
+$store_fields= array();
+foreach ($form_fields as $ffkey => $ffvalue) {
+	//print_r($ffvalue->name);
+	//print_r($ffvalue->labels);
+	$store_fields[$ffvalue->name]=$ffvalue->labels;
+	//echo '<br>';
+}
+
+// foreach ($store_fields as $sfkey => $sfvalue) {
+// 	echo $sfkey;
+// 	echo "<pre>";
+// 	print_r($sfvalue);
+// 	echo "</pre>";
+// }
+
+// echo $store_fields['gender'];
+// foreach ($store_fields['gender'] as $key => $value) {
+// 	echo $value;
+// }
+
+$number_of_questions=count($allstats);
+echo $number_of_questions;
+echo "<br>";
+
 // echo "<br>unique questions <br>";
 // print_r($all_questions_unique);
 // echo "<br>";
@@ -49,18 +87,43 @@ $all_questions_unique=array_unique($allquestions);
 // echo "<br>";
 foreach ($allstats as $questionkey => $questionvalue) {
 	//echo 'edw arxizei to chart' ;
-	if (in_array($questionvalue, $allstats)){
-		echo '<br>1. question : '. $questionvalue;
-		foreach ($all_groups_unique as $groupkey => $groupvalue) {
-			//echo "edw arxizei to kathe group loop  ";
-			echo '<br>2. group : '. $groupvalue;
-			echo '<br> this is the final: <br> ' ;
-			print_r($dataPoints[$groupvalue][$questionvalue]);
-			//echo "edw teleiwnei to kathe group loop  ";
-
+	
+	echo '<hr><br>1. question : '. $questionvalue;
+	foreach ($all_groups_unique as $groupkey => $groupvalue) {
+		//echo "edw arxizei to kathe group loop  ";
+		echo '<br>2. group : '. $groupvalue;
+		//echo '<br> this is the final: <br> ' ;
+		//print_r($dataPoints[$groupvalue][$questionvalue]);
+		//edw paizw mpala
+		foreach ($store_fields[$questionvalue] as $possibleanswerskey => $possibleanswersvalue) {
+			(string)$possibleanswersvalue_fin='"';
+			(string)$possibleanswersvalue_fin.=$possibleanswersvalue;
+			(string)$possibleanswersvalue_fin.='"';
+			echo '<br>3. possible answers value: '. $possibleanswersvalue_fin;
+			$found=false;
+			foreach ($dataPoints[$groupvalue][$questionvalue] as $real_answer_key => $real_answer_value) {
+				echo '<br>4. real answers : ';
+				print_r ($real_answer_value['label']);
+				if ($possibleanswersvalue_fin==$real_answer_value['label']){
+					echo '<br> this is the final: <br> ' ;
+					print_r($real_answer_value);
+					$found=true;
+				}else{
+					//echo '<br> this is the final: <br> ' ;
+					//echo 'Array([label]=>'.$possibleanswersvalue_fin.' [y]=0)';
+				}
+			}
+			if ($found==true){
+				echo "<h3>to brikame</h3>";
+			}else{
+				echo "<h3>den to brikame</h3>";
+			}
 		}
-		//echo 'edw teleiwnei  to chart' ;
+		//echo "edw teleiwnei to kathe group loop  ";
+
 	}
+	//echo 'edw teleiwnei  to chart' ;
+	
 }
 // testing purposes only ENDS
 ?>
