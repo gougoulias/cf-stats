@@ -37,13 +37,16 @@ $all_questions_unique=array_unique($allquestions);
 
 
 // testing purposes only STARTS
+//create the arguments to get all forms ids STARTS
 $args =array(
 	'post_type'=> 'wpcf7_contact_form',
 	'fields'=> 'ids',
 	'nopaging'=> true,
 );
 $all_forms=get_posts($args);
+//create the arguments to get all forms ids ENDS
 
+//get all the formtags from the form that is called in shortcode name STARS
 foreach ($all_forms as $cf7form) {
 	//echo get_the_title($cf7form);
 	if(get_the_title($cf7form)==$name){
@@ -51,26 +54,17 @@ foreach ($all_forms as $cf7form) {
 		$form_fields = $ContactForm->scan_form_tags();
 	}
 }
+//get all the formtags from the form that is called in shortcode name ENDS
 
+//create store fields array and store inside all the names and the possible anwsers START
 $store_fields= array();
 foreach ($form_fields as $ffkey => $ffvalue) {
 	//print_r($ffvalue->name);
 	//print_r($ffvalue->labels);
 	$store_fields[$ffvalue->name]=$ffvalue->labels;
-	//echo '<br>';
 }
+//create store fields array and store inside all the names and the possible anwsers ENDS
 
-// foreach ($store_fields as $sfkey => $sfvalue) {
-// 	echo $sfkey;
-// 	echo "<pre>";
-// 	print_r($sfvalue);
-// 	echo "</pre>";
-// }
-
-// echo $store_fields['gender'];
-// foreach ($store_fields['gender'] as $key => $value) {
-// 	echo $value;
-// }
 
 $number_of_questions=count($allstats);
 echo $number_of_questions;
