@@ -79,10 +79,12 @@ echo "<br>";
 // echo "<br>unique groups <br>";
 // print_r($all_groups_unique);
 // echo "<br>";
+
+
 foreach ($allstats as $questionkey => $questionvalue) {
 	//echo 'edw arxizei to chart' ;
 	
-	echo '<hr><br>1. question : '. $questionvalue;
+	echo '<hr><hr><br>1. question : '. $questionvalue;
 	foreach ($all_groups_unique as $groupkey => $groupvalue) {
 		//echo "edw arxizei to kathe group loop  ";
 		echo '<br>2. group : '. $groupvalue;
@@ -93,7 +95,7 @@ foreach ($allstats as $questionkey => $questionvalue) {
 			(string)$possibleanswersvalue_fin='"';
 			(string)$possibleanswersvalue_fin.=$possibleanswersvalue;
 			(string)$possibleanswersvalue_fin.='"';
-			echo '<br>3. possible answers value: '. $possibleanswersvalue_fin;
+			echo '<hr><br>3. possible answers value: '. $possibleanswersvalue_fin;
 			$found=false;
 			foreach ($dataPoints[$groupvalue][$questionvalue] as $real_answer_key => $real_answer_value) {
 				echo '<br>4. real answers : ';
@@ -107,18 +109,22 @@ foreach ($allstats as $questionkey => $questionvalue) {
 					//echo 'Array([label]=>'.$possibleanswersvalue_fin.' [y]=0)';
 				}
 			}
-			if ($found==true){
-				echo "<h3>to brikame</h3>";
+			if ($found==false){
+				echo '<p style="color:red">den to brikame</p>';
+				echo 'Array ( [label]=>'.$possibleanswersvalue_fin.' [y]=>0 )';
 			}else{
-				echo "<h3>den to brikame</h3>";
+				echo '<p style="color:green">to brikame</p>';
+
 			}
 		}
+		//prepei na mpoun oi erwtiseis kai oi possible kai oi given se ena array kai na kalestei me tin seira
 		//echo "edw teleiwnei to kathe group loop  ";
 
 	}
 	//echo 'edw teleiwnei  to chart' ;
 	
 }
+
 // testing purposes only ENDS
 ?>
 
@@ -168,7 +174,24 @@ foreach ($allstats as $questionkey => $questionvalue) {
 						<?php if  ($groupvaluetitle!='Συνολικές απαντήσεις'){ ?>
 							visible: false,
 						<?php } ?>
-						dataPoints: <?php echo json_encode($dataPoints[$groupvalue][$questionvalue], JSON_NUMERIC_CHECK); ?>
+						dataPoints: <?php 
+						echo json_encode($dataPoints[$groupvalue][$questionvalue], JSON_NUMERIC_CHECK);
+							foreach ($store_fields[$questionvalue] as $possibleanswerskey => $possibleanswersvalue) {
+								(string)$possibleanswersvalue_fin='"';
+								(string)$possibleanswersvalue_fin.=$possibleanswersvalue;
+								(string)$possibleanswersvalue_fin.='"';
+								$found=false;
+								foreach ($dataPoints[$groupvalue][$questionvalue] as $real_answer_key => $real_answer_value) {
+									if ($possibleanswersvalue_fin==$real_answer_value['label']){
+										//echo json_encode($real_answer_value, JSON_NUMERIC_CHECK);
+										$found=true;
+									}
+								}
+								if ($found==false){
+									//echo json_encode(Array ( [label]=>'.$possibleanswersvalue_fin.' [y]=>0 ));
+								}
+							}
+						 ?>
 					},
 					<?php		
 				} ?>
