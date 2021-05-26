@@ -16,7 +16,8 @@ function cf_stats_plugin($atts){
 	extract(shortcode_atts(array(
 		'name'=> '',
 		'stats'=>'',
-		'group'=>'',	
+		'group'=>'',
+		'excludezero'=>'',	
 	),$atts));
 
 	if ($stats!=null){

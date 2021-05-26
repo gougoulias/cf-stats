@@ -188,9 +188,11 @@ foreach ($allstats as $questionkey => $questionvalue) {
 									}
 								}
 								if ($found==false){
-									$temparray=array("label"=> $possibleanswersvalue_fin, "y"=> "0");
-									echo json_encode($temparray, JSON_NUMERIC_CHECK);
-									echo ",";
+									if ($excludezero!='yes'){ //check shortcode value to include or not the zero values
+										$temparray=array("label"=> $possibleanswersvalue_fin, "y"=> "0");
+										echo json_encode($temparray, JSON_NUMERIC_CHECK);
+										echo ",";
+									}
 								}
 							}
 						 ?>
