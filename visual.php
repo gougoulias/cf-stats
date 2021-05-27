@@ -116,7 +116,7 @@ foreach ($allstats as $questionkey => $questionvalue) {
 		animationEnabled: true,
 		theme: "light2",
 		title:{
-			text: "<?php echo $questionvalue; ?>"
+			text: "<?php echo $questionkey; ?>"
 		},
 		axisY:{
 			includeZero: true

@@ -21,10 +21,21 @@ function cf_stats_plugin($atts){
 	),$atts));
 
 	if ($stats!=null){
-		// make an array with all the stats reported in the shortcode parameters
-		$allstats=explode(',',$stats);
-		//make second array for the stats to add later the grouped ones
-		$allstats_plus_groupped=explode(',',$stats);
+		$statsandnames=explode(',',$stats);
+		foreach ($statsandnames as $snkey => $snvalue) {
+			//echo '<br>'.$snvalue ;
+			$seperator='|';
+			$seperatorpossition=strpos($snvalue,$seperator);
+			if($seperatorpossition){
+				$cf7stat_name=substr($snvalue,0,$seperatorpossition);
+				$realname=substr($snvalue,$seperatorpossition+1);
+				$allstats[$realname]=$cf7stat_name;
+				$allstats_plus_groupped[$realname]=$cf7stat_name;
+			}else{
+				$allstats[$snvalue]=$snvalue;
+				$allstats_plus_groupped[$snvalue]=$snvalue;
+			}
+		}
 	}
 	
 	if ($group!=null){
