@@ -158,7 +158,6 @@ function cf_stats_plugin($atts){
 		//check if there are sumbited values and include visual php else prints error
 		if($get_the_keys){
 			include('visual.php');
-			//include('visual_test.php');
 		}else{
 			echo "The are no submited values";
 		}	
@@ -166,17 +165,9 @@ function cf_stats_plugin($atts){
 		//print message to user to use the shortcode parameters name and stats as they are required
 		echo "<br>The shortcode parameter 'name=' and 'stats=' is required <br>";
 	}
-	// echo 'groups arrays is <br>';
-	// echo'<pre>';
-	// print_r($groups_array);
-	// echo'</pre>';
-
 	// //make the array json format
 	// $json_records=json_encode($groups_array);
 	// echo 'this is the json :<br>' . $json_records .'<br>';
-
-	
-	
 }
 
 add_shortcode('cf-stats','cf_stats_plugin');

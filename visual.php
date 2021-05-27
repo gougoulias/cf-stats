@@ -18,25 +18,16 @@ foreach ($counted as $parrent_group => $grouped1) {
 }
 // call the array counted to assign the values so it can be viewable in the script adding label and y keys ENDS
 
-//create arrays for groups and questions START
+//create arrays for groups START
 foreach ($dataPoints as $dPkey => $dPvalue) {
 	//echo "- 1." . $dPkey . $dPvalue; 
 	$all_groups[]=$dPkey;
-	foreach ($dPvalue as $groupnamekey => $groupnamevalue) {
-		//echo "- 2." .$groupnamekey;
-		$allquestions[]=$groupnamekey;
-
-	}
 }
-//create arrays for groups and questions ENDS
+//create array for groups ENDS
 
 //unique the groups
 $all_groups_unique=array_unique($all_groups);
-//unique the questions
-$all_questions_unique=array_unique($allquestions);
 
-
-// testing purposes only STARTS
 //create the arguments to get all forms ids STARTS
 $args =array(
 	'post_type'=> 'wpcf7_contact_form',
@@ -65,25 +56,11 @@ foreach ($form_fields as $ffkey => $ffvalue) {
 }
 //create store fields array and store inside all the names and the possible anwsers ENDS
 
-
-$number_of_questions=count($allstats);
-// echo $number_of_questions;
-// echo "<br>";
-
-// echo "<br>unique questions <br>";
-// print_r($all_questions_unique);
-// echo "<br>";
-// echo "<br>all stats<br>";
-// print_r($allstats);
-// echo "<br>";
-// echo "<br>unique groups <br>";
-// print_r($all_groups_unique);
-// echo "<br>";
-
-
+// testing purposes only STARTS
+//
 // foreach ($allstats as $questionkey => $questionvalue) {
 // 	//echo 'edw arxizei to chart' ;
-	
+//	
 // 	echo '<hr><hr><br>1. question : '. $questionvalue;
 // 	foreach ($all_groups_unique as $groupkey => $groupvalue) {
 // 		//echo "edw arxizei to kathe group loop  ";
@@ -114,16 +91,16 @@ $number_of_questions=count($allstats);
 // 				echo 'Array ( [label]=>'.$possibleanswersvalue_fin.' [y]=>0 )';
 // 			}else{
 // 				echo '<p style="color:green">to brikame</p>';
-
+//
 // 			}
 // 		}
 // 		//echo "edw teleiwnei to kathe group loop  ";
-
+//
 // 	}
 // 	//echo 'edw teleiwnei  to chart' ;
-	
+//	
 // }
-
+//
 // testing purposes only ENDS
 ?>
 
@@ -133,91 +110,85 @@ $number_of_questions=count($allstats);
 <script>
 	window.onload = function () {
 <?php 
-
-//foreach ($all_questions_unique as $questionkey => $questionvalue) {
 foreach ($allstats as $questionkey => $questionvalue) {
-	if (in_array($questionvalue, $allstats)){ ////checks if the question is going to be viewable or if it is used only for groupping
-		?>
-		 
-		var chart<?php echo str_replace('-','',$questionvalue) ;?> = new CanvasJS.Chart("chart-<?php echo $questionvalue ;?>", {
-			animationEnabled: true,
-			theme: "light2",
-			title:{
-				text: "<?php echo $questionvalue; ?>"
-			},
-			axisY:{
-				includeZero: true
-			},
-			legend:{
-				cursor: "pointer",
-				verticalAlign: "center",
-				horizontalAlign: "right",
-				itemclick: toggleDataSeries<?php echo str_replace('-','',$questionvalue) ;?>
-			},
-			data: [
-				<?php
-				foreach ($all_groups_unique as $groupkey => $groupvalue) {
-					if ($groupvalue=='ungrouped'){
-						$groupvaluetitle='Συνολικές απαντήσεις';
-					}else{
-						$groupvaluetitle=$groupvalue;
-					}
-			 		 ?>
-					{
-						type: "column",
-						name: "<?php echo $groupvaluetitle ; ?>",
-						indexLabel: "{y}",
-						yValueFormatString: "#0.##",
-						showInLegend: true,
-						//if the group value title is not the total make it non visible by default
-						<?php if  ($groupvaluetitle!='Συνολικές απαντήσεις'){ ?>
-							visible: false,
-						<?php } ?>
-						dataPoints: [<?php 
-						//echo json_encode($dataPoints[$groupvalue][$questionvalue], JSON_NUMERIC_CHECK);
-							foreach ($store_fields[$questionvalue] as $possibleanswerskey => $possibleanswersvalue) {
-								(string)$possibleanswersvalue_fin='"';
-								(string)$possibleanswersvalue_fin.=$possibleanswersvalue;
-								(string)$possibleanswersvalue_fin.='"';
-								$found=false;
-								foreach ($dataPoints[$groupvalue][$questionvalue] as $real_answer_key => $real_answer_value) {
-									if ($possibleanswersvalue_fin==$real_answer_value['label']){
-										echo json_encode($real_answer_value, JSON_NUMERIC_CHECK);
-										echo ",";
-										$found=true;
-									}
-								}
-								if ($found==false){
-									if ($excludezero!='yes'){ //check shortcode value to include or not the zero values
-										$temparray=array("label"=> $possibleanswersvalue_fin, "y"=> "0");
-										echo json_encode($temparray, JSON_NUMERIC_CHECK);
-										echo ",";
-									}
+	?>	 
+	var chart<?php echo str_replace('-','',$questionvalue) ;?> = new CanvasJS.Chart("chart-<?php echo $questionvalue ;?>", {
+		animationEnabled: true,
+		theme: "light2",
+		title:{
+			text: "<?php echo $questionvalue; ?>"
+		},
+		axisY:{
+			includeZero: true
+		},
+		legend:{
+			cursor: "pointer",
+			verticalAlign: "center",
+			horizontalAlign: "right",
+			itemclick: toggleDataSeries<?php echo str_replace('-','',$questionvalue) ;?>
+		},
+		data: [
+			<?php
+			foreach ($all_groups_unique as $groupkey => $groupvalue) {
+				if ($groupvalue=='ungrouped'){
+					$groupvaluetitle='Συνολικές απαντήσεις';
+				}else{
+					$groupvaluetitle=$groupvalue;
+				}
+		 		 ?>
+				{
+					type: "column",
+					name: "<?php echo $groupvaluetitle ; ?>",
+					indexLabel: "{y}",
+					yValueFormatString: "#0.##",
+					showInLegend: true,
+					//if the group value title is not the total make it non visible by default
+					<?php if  ($groupvaluetitle!='Συνολικές απαντήσεις'){ ?>
+						visible: false,
+					<?php } ?>
+					dataPoints: [<?php 
+					//echo json_encode($dataPoints[$groupvalue][$questionvalue], JSON_NUMERIC_CHECK);
+						foreach ($store_fields[$questionvalue] as $possibleanswerskey => $possibleanswersvalue) {
+							(string)$possibleanswersvalue_fin='"';
+							(string)$possibleanswersvalue_fin.=$possibleanswersvalue;
+							(string)$possibleanswersvalue_fin.='"';
+							$found=false;
+							foreach ($dataPoints[$groupvalue][$questionvalue] as $real_answer_key => $real_answer_value) {
+								if ($possibleanswersvalue_fin==$real_answer_value['label']){
+									echo json_encode($real_answer_value, JSON_NUMERIC_CHECK);
+									echo ",";
+									$found=true;
 								}
 							}
-						 ?>
-					]},
-					<?php		
-				} ?>
-			]
-		});
+							if ($found==false){
+								if ($excludezero!='yes'){ //check shortcode value to include or not the zero values
+									$temparray=array("label"=> $possibleanswersvalue_fin, "y"=> "0");
+									echo json_encode($temparray, JSON_NUMERIC_CHECK);
+									echo ",";
+								}
+							}
+						}
+					 ?>
+				]},
+				<?php		
+			} ?>
+		]
+	});
+	chart<?php echo str_replace('-','',$questionvalue) ;?>.render();
+	 
+	function toggleDataSeries<?php echo str_replace('-','',$questionvalue) ;?>(e){
+		// create loop for each group so se visible only the selected one and hide others
+		<?php foreach ($all_groups_unique as $groupnumber => $groupname) { ?>
+			//console.log("epanalipsi" + <?php echo $groupnumber ?> );
+			if (e.dataSeries.name=== e.chart.options.data[<?php echo $groupnumber; ?>].name){
+				e.chart.options.data[<?php echo $groupnumber; ?>].visible = true;
+			}else{
+				e.chart.options.data[<?php echo $groupnumber ; ?>].visible = false;
+			}
+		<?php } ?>
 		chart<?php echo str_replace('-','',$questionvalue) ;?>.render();
-		 
-		function toggleDataSeries<?php echo str_replace('-','',$questionvalue) ;?>(e){
-			// create loop for each group so se visible only the selected one and hide others
-			<?php foreach ($all_groups_unique as $groupnumber => $groupname) { ?>
-				//console.log("epanalipsi" + <?php echo $groupnumber ?> );
-				if (e.dataSeries.name=== e.chart.options.data[<?php echo $groupnumber; ?>].name){
-					e.chart.options.data[<?php echo $groupnumber; ?>].visible = true;
-				}else{
-					e.chart.options.data[<?php echo $groupnumber ; ?>].visible = false;
-				}
-			<?php } ?>
-			chart<?php echo str_replace('-','',$questionvalue) ;?>.render();
-		}
-		 
-		<?php	
-	}
+	}	 
+	<?php		
 }
 
 ?>
@@ -226,16 +197,13 @@ foreach ($allstats as $questionkey => $questionvalue) {
 <!-- script end here -->
 <?php
 
-
 //create the loop for all divs the charts will be shown STARTS
 //foreach ($all_questions_unique as $questionkey => $questionvalue) {
 foreach ($allstats as $questionkey => $questionvalue) {
-	if (in_array($questionvalue, $allstats)){ //checks if the question is going to be viewable or if it is used only for groupping
 		?>
 		<!-- create the div for each chart -->
 		<div id="chart-<?php echo $questionvalue ; ?>" style="height: 370px; width: 100%;"></div>
 		<?php
-	}
 }
 //create the loop for all divs the charts will be shown ENDS
 ?>
