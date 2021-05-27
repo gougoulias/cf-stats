@@ -22,20 +22,27 @@ function cf_stats_plugin($atts){
 
 	if ($stats!=null){
 		$statsandnames=explode(',',$stats);
+		//starting creating the basic arrays depending the shortcode stats parameters  STARTS
 		foreach ($statsandnames as $snkey => $snvalue) {
 			//echo '<br>'.$snvalue ;
 			$seperator='|';
 			$seperatorpossition=strpos($snvalue,$seperator);
-			if($seperatorpossition){
+			if($seperatorpossition){ //checking if the | character found and append the 2 bellow stings to the key and the value
+				// creating two separate strings and assign them to the key array and the value array
 				$cf7stat_name=substr($snvalue,0,$seperatorpossition);
 				$realname=substr($snvalue,$seperatorpossition+1);
+				//all stats is the basic array
 				$allstats[$realname]=$cf7stat_name;
+				//all stats is the basic array that will be also added the grouped values if there are any
 				$allstats_plus_groupped[$realname]=$cf7stat_name;
-			}else{
+			}else{ //if the | character is not found we append to the key and the value the shortcode stat as given
+				//all stats is the basic array 
 				$allstats[$snvalue]=$snvalue;
+				//all stats is the basic array that will be also added the grouped values if there are any
 				$allstats_plus_groupped[$snvalue]=$snvalue;
 			}
 		}
+		//starting creating the basic arrays depending the shortcode stats parameters  ENDS
 	}
 	
 	if ($group!=null){
