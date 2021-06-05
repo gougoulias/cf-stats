@@ -17,7 +17,8 @@ function cf_stats_plugin($atts){
 		'name'=> '',
 		'stats'=>'',
 		'group'=>'',
-		'excludezero'=>'',	
+		'excludezero'=>'',
+		'percentage'=>'',	
 	),$atts));
 
 	if ($stats!=null){
@@ -68,6 +69,8 @@ function cf_stats_plugin($atts){
 			'nopaging'=> true,
 		);
 
+		$total_number_of_answers=0;// seting the default value for the total number of answers
+
 		$flamingo_posts=get_posts($args);
 		
 		//get the fields values
@@ -83,6 +86,7 @@ function cf_stats_plugin($atts){
 			
 			//check the form name to start collecting values
 			if ($flamingo_taxonomy_name==$name){
+				$total_number_of_answers=$total_number_of_answers+1; // starting to count the total number of answers
 				//Flamingo post start
 				// get all the keys of the flamingo post 
 				$get_the_keys=array_keys(get_post_meta($flp));

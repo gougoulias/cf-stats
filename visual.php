@@ -1,22 +1,45 @@
 <?php
-// call the array counted to assign the values so it can be viewable in the script adding label and y keys START
+// call the array counted for 1st time to find the total number of answers for each group STARTS
 foreach ($counted as $parrent_group => $grouped1) {
 	//echo '<p>'.$parrent_group.'</p>';
 	foreach ($grouped1 as $groupped_value => $grouped2 ){
 		//echo '<p>' . $groupped_value. '</p>';
 		$group_count=$group_count+1;
 		foreach ($grouped2 as $onegroup => $onegroupvalue) {
-			$i=0;//counter for the answers
+			//try to find the total answers given for each group START
 			foreach ($onegroupvalue as $label => $y) {
-				//preg replace special characters with space to prevent the brake of the script bellow
-					$dataPoints[$groupped_value][$onegroup][$i]["label"]=preg_replace('/[\'?\/\(\)\[\];]/', '', $label);
-					$dataPoints[$groupped_value][$onegroup][$i]["y"]=preg_replace('/[\'?\/\(\)\[\];]/', '', $y);
-					$i=$i+1;
+				if($parrent_group==$onegroup){ //check groups in order to get the number of answered products per group
+					//echo $onegroup;
+					$of_total[$groupped_value]=preg_replace('/[\'?\/\(\)\[\];]/', '', $y);
+				}elseif ($parrent_group=='ungrouped') { // if not group then assignt to the total the total number of answers
+					$of_total[$groupped_value]=$total_number_of_answers;
+				}
 			}
 		}
 	}
 }
-// call the array counted to assign the values so it can be viewable in the script adding label and y keys ENDS
+// call the array counted for 1st time to find the total number of answers for each group ENDS
+
+// call the array counted  for second time to assign the values so it can be viewable in the script adding label and y keys START
+foreach ($counted as $parrent_group => $grouped1) {
+	//echo '<p>'.$parrent_group.'</p>';
+	foreach ($grouped1 as $groupped_value => $grouped2 ){
+		//echo '<p>' . $groupped_value. '</p>';
+		$group_count=$group_count+1;
+		foreach ($grouped2 as $onegroup => $onegroupvalue) {
+			
+			$i=0;//counter for the answers
+			foreach ($onegroupvalue as $label => $y) {
+				//preg replace special characters with space to prevent the brake of the script bellow
+				$dataPoints[$groupped_value][$onegroup][$i]["label"]=preg_replace('/[\'?\/\(\)\[\];]/', '', $label);
+				$dataPoints[$groupped_value][$onegroup][$i]["y"]=preg_replace('/[\'?\/\(\)\[\];]/', '', $y);
+				$dataPoints[$groupped_value][$onegroup][$i]["of_total"]=$of_total[$groupped_value];//assign the of total groupped value from the previous loop that we have found the total number of answers for each group
+				$i=$i+1;
+			}
+		}
+	}
+}
+// call the array counted  for second time to assign the values so it can be viewable in the script adding label and y keys ENDS
 
 //create arrays for groups START
 foreach ($dataPoints as $dPkey => $dPvalue) {
@@ -58,6 +81,7 @@ foreach ($form_fields as $ffkey => $ffvalue) {
 
 // testing purposes only STARTS
 //
+// echo 'total number of anwswers = ' .$total_number_of_answers;
 // foreach ($allstats as $questionkey => $questionvalue) {
 // 	//echo 'edw arxizei to chart' ;
 //	
@@ -80,6 +104,9 @@ foreach ($form_fields as $ffkey => $ffvalue) {
 // 				if ($possibleanswersvalue_fin==$real_answer_value['label']){
 // 					echo '<br> this is the final: <br> ' ;
 // 					print_r($real_answer_value);
+// 					$percentage=$real_answer_value['y']*100/$real_answer_value['of_total'];
+// 					echo '<br>pososto epi tis ekato=' .$percentage;
+// 					echo "Array ( [label]=>".$real_answer_value['label']." [y]=>".$percentage." )";
 // 					$found=true;
 // 				}else{
 // 					//echo '<br> this is the final: <br> ' ;
@@ -140,7 +167,14 @@ foreach ($allstats as $questionkey => $questionvalue) {
 					type: "column",
 					name: "<?php echo $groupvaluetitle ; ?>",
 					indexLabel: "{y}",
-					yValueFormatString: "#0.##",
+					<?php
+					if ($percentage!='yes'){
+						$valueformatsring="#0.##";
+					}else{
+						$valueformatsring="#0.##'%'";
+					}
+					?>
+					yValueFormatString: "<?php echo $valueformatsring; ?>",
 					showInLegend: true,
 					//if the group value title is not the total make it non visible by default
 					<?php if  ($groupvaluetitle!='Συνολικές απαντήσεις'){ ?>
@@ -155,7 +189,13 @@ foreach ($allstats as $questionkey => $questionvalue) {
 							$found=false;
 							foreach ($dataPoints[$groupvalue][$questionvalue] as $real_answer_key => $real_answer_value) {
 								if ($possibleanswersvalue_fin==$real_answer_value['label']){
-									echo json_encode($real_answer_value, JSON_NUMERIC_CHECK);
+									if ($percentage!='yes'){
+										echo json_encode($real_answer_value, JSON_NUMERIC_CHECK);
+									}else{
+										$percentage_value=$real_answer_value['y']*100/$real_answer_value['of_total'];
+										$printablearray=array("label"=> $real_answer_value['label'], "y"=> $percentage_value);
+										echo json_encode($printablearray, JSON_NUMERIC_CHECK);
+									}
 									echo ",";
 									$found=true;
 								}
