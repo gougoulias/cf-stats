@@ -167,7 +167,14 @@ foreach ($allstats as $questionkey => $questionvalue) {
 					type: "column",
 					name: "<?php echo $groupvaluetitle ; ?>",
 					indexLabel: "{y}",
-					yValueFormatString: "#0.##'%'",
+					<?php
+					if ($percentage!='yes'){
+						$valueformatsring="#0.##";
+					}else{
+						$valueformatsring="#0.##'%'";
+					}
+					?>
+					yValueFormatString: "<?php echo $valueformatsring; ?>",
 					showInLegend: true,
 					//if the group value title is not the total make it non visible by default
 					<?php if  ($groupvaluetitle!='Συνολικές απαντήσεις'){ ?>
@@ -182,10 +189,13 @@ foreach ($allstats as $questionkey => $questionvalue) {
 							$found=false;
 							foreach ($dataPoints[$groupvalue][$questionvalue] as $real_answer_key => $real_answer_value) {
 								if ($possibleanswersvalue_fin==$real_answer_value['label']){
-									//echo json_encode($real_answer_value, JSON_NUMERIC_CHECK);
-									$percentage=$real_answer_value['y']*100/$real_answer_value['of_total'];
-									$printablearray=array("label"=> $real_answer_value['label'], "y"=> $percentage);
-									echo json_encode($printablearray, JSON_NUMERIC_CHECK);
+									if ($percentage!='yes'){
+										echo json_encode($real_answer_value, JSON_NUMERIC_CHECK);
+									}else{
+										$percentage_value=$real_answer_value['y']*100/$real_answer_value['of_total'];
+										$printablearray=array("label"=> $real_answer_value['label'], "y"=> $percentage_value);
+										echo json_encode($printablearray, JSON_NUMERIC_CHECK);
+									}
 									echo ",";
 									$found=true;
 								}

@@ -17,7 +17,8 @@ function cf_stats_plugin($atts){
 		'name'=> '',
 		'stats'=>'',
 		'group'=>'',
-		'excludezero'=>'',	
+		'excludezero'=>'',
+		'percentage'=>'',	
 	),$atts));
 
 	if ($stats!=null){
