@@ -3,7 +3,7 @@
  * Plugin Name: CF stats
  * Plugin URI: https://github.com/gougoulias/cf-stats
  * Description: Contact form 7 submitions by flamingo statistics view.
- * Version: 3.0
+ * Version: 3.1
  * Author: Giannis Gougoulias
  * Author URI: https://github.com/gougoulias
  */
