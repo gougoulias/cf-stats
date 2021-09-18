@@ -150,8 +150,8 @@ foreach ($allstats as $questionkey => $questionvalue) {
 		},
 		legend:{
 			cursor: "pointer",
-			verticalAlign: "center",
-			horizontalAlign: "right",
+			verticalAlign: "bottom",
+			horizontalAlign: "center",
 			itemclick: toggleDataSeries<?php echo str_replace('-','',$questionvalue) ;?>
 		},
 		data: [
