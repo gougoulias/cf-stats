@@ -242,7 +242,7 @@ foreach ($allstats as $questionkey => $questionvalue) {
 foreach ($allstats as $questionkey => $questionvalue) {
 		?>
 		<!-- create the div for each chart -->
-		<div id="chart-<?php echo $questionvalue ; ?>" style="height: 370px; width: 100%;"></div>
+		<div id="chart-<?php echo $questionvalue ; ?>" class="cf-stat-chart" style="height: 420px; width: 100%;"></div>
 		<?php
 }
 //create the loop for all divs the charts will be shown ENDS
