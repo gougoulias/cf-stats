@@ -160,7 +160,7 @@ function cf_stat_clear_cached_data($post_id){
 		array( 
 			'post_id' => $post_id, 
 		),
-		['%d'],
+		['%d']
 	);
 }
 
