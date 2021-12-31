@@ -1,45 +1,92 @@
 <?php
-// call the array counted for 1st time to find the total number of answers for each group STARTS
-foreach ($counted as $parrent_group => $grouped1) {
-	//echo '<p>'.$parrent_group.'</p>';
-	foreach ($grouped1 as $groupped_value => $grouped2 ){
-		//echo '<p>' . $groupped_value. '</p>';
-		$group_count=$group_count+1;
-		foreach ($grouped2 as $onegroup => $onegroupvalue) {
-			//try to find the total answers given for each group START
-			foreach ($onegroupvalue as $label => $y) {
-				if($parrent_group==$onegroup){ //check groups in order to get the number of answered products per group
-					//echo $onegroup;
-					$of_total[$groupped_value]=preg_replace('/[\'?\/\(\)\[\];]/', '', $y);
-				}elseif ($parrent_group=='ungrouped') { // if not group then assignt to the total the total number of answers
-					$of_total[$groupped_value]=$total_number_of_answers;
+//Save and retrieved cached data from/to database STARTS
+if ($cached_setting=='on' && check_if_data_stored(get_the_post_id_that_used_the_shotcode()) ){
+	//get the values from the database
+	$dataPoints=json_decode(cf_stat_get_data(get_the_post_id_that_used_the_shotcode()),true);
+	if (current_user_can('administrator')){
+		if ($_POST['clear_cache']!='yes'){
+		?>
+		<form action="" method="post">
+			<small><strong>Administrator note:</strong></small>
+			<small>You see cached data stored in </small>
+			<small>
+				<?php
+					echo cf_stat_get_last_update(get_the_post_id_that_used_the_shotcode());
+				?>
+			</small>
+			<small>.<br> Please press </small>
+			<input name="clear_cache" type="hidden" value="yes">
+			<button class="button button-primary" type="submit">Clear Cache</button>
+			<small>to update the data.</small>
+		</form>
+		<?php
+		}
+		if($_POST['clear_cache']=='yes'){
+			cf_stat_clear_cached_data(get_the_post_id_that_used_the_shotcode());
+			?>
+			<form action="" method="post">
+			<input name="clear_cache" type="hidden" value="no">
+			<button class="button button-primary" type="submit">Refresh Page to update the data</button>
+			</form>
+		<?php
+
+		}
+	}
+}else{
+	// call the array counted for 1st time to find the total number of answers for each group STARTS
+	foreach ($counted as $parrent_group => $grouped1) {
+		//echo '<p>'.$parrent_group.'</p>';
+		foreach ($grouped1 as $groupped_value => $grouped2 ){
+			//echo '<p>' . $groupped_value. '</p>';
+			$group_count=$group_count+1;
+			foreach ($grouped2 as $onegroup => $onegroupvalue) {
+				//try to find the total answers given for each group START
+				foreach ($onegroupvalue as $label => $y) {
+					if($parrent_group==$onegroup){ //check groups in order to get the number of answered products per group
+						//echo $onegroup;
+						$of_total[$groupped_value]=preg_replace('/[\'?\/\(\)\[\];]/', '', $y);
+					}elseif ($parrent_group=='ungrouped') { // if not group then assignt to the total the total number of answers
+						$of_total[$groupped_value]=$total_number_of_answers;
+					}
 				}
 			}
 		}
 	}
-}
-// call the array counted for 1st time to find the total number of answers for each group ENDS
+	// call the array counted for 1st time to find the total number of answers for each group ENDS
 
-// call the array counted  for second time to assign the values so it can be viewable in the script adding label and y keys START
-foreach ($counted as $parrent_group => $grouped1) {
-	//echo '<p>'.$parrent_group.'</p>';
-	foreach ($grouped1 as $groupped_value => $grouped2 ){
-		//echo '<p>' . $groupped_value. '</p>';
-		$group_count=$group_count+1;
-		foreach ($grouped2 as $onegroup => $onegroupvalue) {
-			
-			$i=0;//counter for the answers
-			foreach ($onegroupvalue as $label => $y) {
-				//preg replace special characters with space to prevent the brake of the script bellow
-				$dataPoints[$groupped_value][$onegroup][$i]["label"]=preg_replace('/[\'?\/\(\)\[\];]/', '', $label);
-				$dataPoints[$groupped_value][$onegroup][$i]["y"]=preg_replace('/[\'?\/\(\)\[\];]/', '', $y);
-				$dataPoints[$groupped_value][$onegroup][$i]["of_total"]=$of_total[$groupped_value];//assign the of total groupped value from the previous loop that we have found the total number of answers for each group
-				$i=$i+1;
+	// call the array counted  for second time to assign the values so it can be viewable in the script adding label and y keys START
+	foreach ($counted as $parrent_group => $grouped1) {
+		//echo '<p>'.$parrent_group.'</p>';
+		foreach ($grouped1 as $groupped_value => $grouped2 ){
+			//echo '<p>' . $groupped_value. '</p>';
+			$group_count=$group_count+1;
+			foreach ($grouped2 as $onegroup => $onegroupvalue) {
+				
+				$i=0;//counter for the answers
+				foreach ($onegroupvalue as $label => $y) {
+					//preg replace special characters with space to prevent the brake of the script bellow
+					$dataPoints[$groupped_value][$onegroup][$i]["label"]=preg_replace('/[\'?\/\(\)\[\];]/', '', $label);
+					$dataPoints[$groupped_value][$onegroup][$i]["y"]=preg_replace('/[\'?\/\(\)\[\];]/', '', $y);
+					$dataPoints[$groupped_value][$onegroup][$i]["of_total"]=$of_total[$groupped_value];//assign the of total groupped value from the previous loop that we have found the total number of answers for each group
+					$i=$i+1;
+				}
 			}
 		}
 	}
+	// call the array counted  for second time to assign the values so it can be viewable in the script adding label and y keys ENDS
+	if ($cached_setting=='on'){
+		$cached_dataPoints=json_encode($dataPoints);
+		// check if there is any data stored in the db for the specific form
+		if (check_if_data_stored(get_the_post_id_that_used_the_shotcode())){
+			// do update with the latest values
+			cf_stat_data_update($cached_dataPoints,get_the_post_id_that_used_the_shotcode());
+		}else{
+			// do insert the data for first time
+			cf_stat_data_import($name,$cached_dataPoints,get_the_post_id_that_used_the_shotcode());
+		}
+	}
 }
-// call the array counted  for second time to assign the values so it can be viewable in the script adding label and y keys ENDS
+//Save and retrieved cached data from/to database ENDS
 
 //create arrays for groups START
 foreach ($dataPoints as $dPkey => $dPvalue) {
@@ -78,60 +125,7 @@ foreach ($form_fields as $ffkey => $ffvalue) {
 	$store_fields[$ffvalue->name]=$ffvalue->labels;
 }
 //create store fields array and store inside all the names and the possible anwsers ENDS
-
-// testing purposes only STARTS
-//
-// echo 'total number of anwswers = ' .$total_number_of_answers;
-// foreach ($allstats as $questionkey => $questionvalue) {
-// 	//echo 'edw arxizei to chart' ;
-//	
-// 	echo '<hr><hr><br>1. question : '. $questionvalue;
-// 	foreach ($all_groups_unique as $groupkey => $groupvalue) {
-// 		//echo "edw arxizei to kathe group loop  ";
-// 		echo '<br>2. group : '. $groupvalue;
-// 		//echo '<br> this is the final: <br> ' ;
-// 		//print_r($dataPoints[$groupvalue][$questionvalue]);
-// 		//edw paizw mpala
-// 		foreach ($store_fields[$questionvalue] as $possibleanswerskey => $possibleanswersvalue) {
-// 			(string)$possibleanswersvalue_fin='"';
-// 			(string)$possibleanswersvalue_fin.=$possibleanswersvalue;
-// 			(string)$possibleanswersvalue_fin.='"';
-// 			echo '<hr><br>3. possible answers value: '. $possibleanswersvalue_fin;
-// 			$found=false;
-// 			foreach ($dataPoints[$groupvalue][$questionvalue] as $real_answer_key => $real_answer_value) {
-// 				echo '<br>4. real answers : ';
-// 				print_r ($real_answer_value['label']);
-// 				if ($possibleanswersvalue_fin==$real_answer_value['label']){
-// 					echo '<br> this is the final: <br> ' ;
-// 					print_r($real_answer_value);
-// 					$percentage=$real_answer_value['y']*100/$real_answer_value['of_total'];
-// 					echo '<br>pososto epi tis ekato=' .$percentage;
-// 					echo "Array ( [label]=>".$real_answer_value['label']." [y]=>".$percentage." )";
-// 					$found=true;
-// 				}else{
-// 					//echo '<br> this is the final: <br> ' ;
-// 					//echo 'Array([label]=>'.$possibleanswersvalue_fin.' [y]=0)';
-// 				}
-// 			}
-// 			if ($found==false){
-// 				echo '<p style="color:red">den to brikame</p>';
-// 				echo 'Array ( [label]=>'.$possibleanswersvalue_fin.' [y]=>0 )';
-// 			}else{
-// 				echo '<p style="color:green">to brikame</p>';
-//
-// 			}
-// 		}
-// 		//echo "edw teleiwnei to kathe group loop  ";
-//
-// 	}
-// 	//echo 'edw teleiwnei  to chart' ;
-//	
-// }
-//
-// testing purposes only ENDS
 ?>
-
-
 
 <!--starting the script-->
 <script>
