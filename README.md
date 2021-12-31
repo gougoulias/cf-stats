@@ -14,3 +14,5 @@ Upload the zip into the Wordpress plugins folder or install plugin through the p
 <p>The PERCENTAGE shortcode parameter is optional, and it's purpose is to show the answers with percentage value depending the number of answers, the only acceptable value is "yes" otherwise is considered as "no"<p>
 <hr>
 <p>Example of use : [cf-stats name="Gallop" stats="question1|This is the question 1,question2,question3,question4" group="gender,age" excludezero="yes" percentage="yes"]</p>
+<hr>
+<p>From Version 4 there is Cache option added</p>

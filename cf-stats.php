@@ -2,12 +2,170 @@
 /**
  * Plugin Name: CF stats
  * Plugin URI: https://github.com/gougoulias/cf-stats
- * Description: Contact form 7 submitions by flamingo statistics view.
- * Version: 3.1.2
+ * Description: Statistic Charts from Contact form 7 submitions stored by flamingo.
+ * Version: 4.0.0
  * Author: Giannis Gougoulias
  * Author URI: https://github.com/gougoulias
  */
 
+
+//backend - settings STARTS
+
+function cf_stats_add_settings_page() {
+    add_options_page( 'CF Stats page', 'CF Stats Settings', 'manage_options', 'cf_stats_plugin', 'cf_stat_render_plugin_settings_page' );
+}
+add_action( 'admin_menu', 'cf_stats_add_settings_page' );
+
+function cf_stats_settings_init() {
+  register_setting('cf_stats', 'cf_stats_settings');
+  add_settings_section( 'cf_stats_settings_section', '', '', 'cf_stats' );
+  add_settings_field( 'cf_stats_cached', 'Use of Cached Data', 'cf_stats_cached_render', 'cf_stats', 'cf_stats_settings_section' );
+
+}
+add_action('admin_init', 'cf_stats_settings_init');
+
+function cf_stats_cached_render(){
+	$options = get_option( 'cf_stats_settings' );
+	?>
+	<input id="off" type='radio' name='cf_stats_settings[cf_stats_cached]' <?php checked( $options['cf_stats_cached'], 'off' ); ?> value='off'>
+	<label for="off">No, Disable cache</label>
+	<br>
+	<input id="on" type='radio' name='cf_stats_settings[cf_stats_cached]' <?php checked( $options['cf_stats_cached'], 'on' ); ?> value='on'>
+	<label for="on">Yes, Enable cache</label>
+	<?php
+}
+
+function cf_stat_render_plugin_settings_page(){
+	?>
+    <h2>Cf Stats Settings</h2>
+    <form action="options.php" method="post">
+        <?php 
+        settings_fields( 'cf_stats' );
+        do_settings_sections( 'cf_stats' ); ?>
+        <input name="submit" class="button button-primary" type="submit" value="<?php esc_attr_e( 'Save' ); ?>" />
+    </form>
+    <?php
+}
+
+function cached_option(){
+	$options=get_option('cf_stats_settings');
+
+	if (!$options['cf_stats_cached']){
+		$cached_setting='off';
+	}else{
+		$cached_setting=$options['cf_stats_cached'];
+	}
+	return $cached_setting;
+}
+//backend - settings ENDS
+
+// process to create the database table that will store the cached data of the results STARTS
+function cfstat_install_db(){
+	global $wpdb;
+	$table_name = $wpdb->prefix . 'cf_stats';
+	
+	$charset_collate = $wpdb->get_charset_collate();
+
+	$sql = "
+		CREATE TABLE $table_name (
+			id mediumint(9) NOT NULL AUTO_INCREMENT,
+			last_update datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+			form_name tinytext NOT NULL,
+			dataPoints longtext NOT NULL,
+			post_id mediumint NOT NULL,
+			PRIMARY KEY  (id)
+		);
+		";
+
+	$wpdb->get_results($sql);
+}
+
+// hook to create the database table when the plugin is activated by admin
+register_activation_hook(__FILE__, 'cfstat_install_db' );
+
+// process to create the database table that will store the cached data of the results ENDS
+
+// finds the post id that used the shortcode
+function get_the_post_id_that_used_the_shotcode(){
+	global $post;
+	$post_id = get_the_ID();
+	return $post_id;
+}
+
+//inserts the data to our database table
+function cf_stat_data_import($form_name,$dataPoints,$post_id){
+	global $wpdb;
+	$table_name = $wpdb->prefix . 'cf_stats';
+	$wpdb->insert( 
+		$table_name, 
+		array( 
+			'last_update' => current_time( 'mysql' ), 
+			'form_name' => $form_name, 
+			'dataPoints' => $dataPoints,
+			'post_id'=>$post_id, 
+		) 
+	);
+}
+
+// updates the data to our database table
+function cf_stat_data_update($dataPoints,$post_id){
+	global $wpdb;
+	$table_name = $wpdb->prefix . 'cf_stats';
+	$wpdb->update( 
+		$table_name, 
+		array( 
+			'last_update' => current_time( 'mysql' ), 
+			'dataPoints' => $dataPoints,
+		),
+		array(
+			'post_id'=>$post_id, 
+		) 
+	);
+}
+
+//checks if there are any data stored in the database table for the post_id that used the shortcode
+function check_if_data_stored($post_id){
+	global $wpdb;
+	$table_name = $wpdb->prefix . 'cf_stats';
+	$result=$wpdb->get_var("SELECT dataPoints FROM $table_name WHERE post_id='$post_id'");
+	if ($result!=0 || $result != null){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+// returns the data stored in the database table
+function cf_stat_get_data($post_id){
+	global $wpdb;
+	$table_name = $wpdb->prefix . 'cf_stats';
+	$result=$wpdb->get_var("SELECT dataPoints FROM $table_name WHERE post_id='$post_id'");
+	return $result;
+}
+
+// returns the time when data stored in the database table
+function cf_stat_get_last_update($post_id){
+	global $wpdb;
+	$table_name = $wpdb->prefix . 'cf_stats';
+	$result=$wpdb->get_var("SELECT last_update FROM $table_name WHERE post_id='$post_id'");
+	return $result;
+}
+
+//deletes (clear cached values) form database table
+function cf_stat_clear_cached_data($post_id){
+	global $wpdb;
+	$table_name = $wpdb->prefix . 'cf_stats';
+	$wpdb->delete( 
+		$table_name, 
+		array( 
+			'post_id' => $post_id, 
+		),
+		['%d'],
+	);
+}
+
+
+// the main function of the CF Stats Plugin
 function cf_stats_plugin($atts){
  	// built the shorcode attributes
  		// name = the name of the contactform
@@ -20,6 +178,9 @@ function cf_stats_plugin($atts){
 		'excludezero'=>'',
 		'percentage'=>'',	
 	),$atts));
+
+	//store the cache setting option the user makes
+	$cached_setting=cached_option();
 
 	if ($stats!=null){
 		$statsandnames=explode(',',$stats);
@@ -148,13 +309,13 @@ function cf_stats_plugin($atts){
 														}
 													}	
 												}
-											}//second loop of the form fiedls ends here
+											}//second loop of the form fields ends here
 											//echo "<br>--------group ". $group_field ." ENDS HERE--------------<br>";
 										}
 									}//end grouping
 								}//end ckeck for groups
 								//print_r(get_post_meta($flp)[$fkey]);
-								// get the value of the form field for the ungrouuped value
+								// get the value of the form field for the ungrouped value
 								$value_ungrouped=get_post_meta($flp)[$fkey][0];
 								$regex_value='/("[\w\d\sαβγδεζηθικλμνξοπρστυφχψωςΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩάέήίόύώΆΈΉΊΌΎΏϊϋΪΫ&+?-?-?\/?\'?\.?\(?\)?\;?\[]+")/i';
 								//clean the value of not essential elements
@@ -177,7 +338,7 @@ function cf_stats_plugin($atts){
 				// Flamingo post Ends
 			}// end if for check name
 		}
-		//check if there are sumbited values and include visual php else prints error
+		//check if there are submited values and include visual php else prints error
 		if($get_the_keys){
 			include('visual.php');
 		}else{
@@ -187,9 +348,7 @@ function cf_stats_plugin($atts){
 		//print message to user to use the shortcode parameters name and stats as they are required
 		echo "<br>The shortcode parameter 'name=' and 'stats=' is required <br>";
 	}
-	// //make the array json format
-	// $json_records=json_encode($groups_array);
-	// echo 'this is the json :<br>' . $json_records .'<br>';
 }
 
+//the shortcode used to call the cf stat plugin
 add_shortcode('cf-stats','cf_stats_plugin');
