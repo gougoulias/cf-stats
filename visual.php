@@ -82,7 +82,7 @@ if ($cached_setting=='on' && check_if_data_stored(get_the_post_id_that_used_the_
 			cf_stat_data_update($cached_dataPoints,get_the_post_id_that_used_the_shotcode());
 		}else{
 			// do insert the data for first time
-			cf_stat_data_import($name,$cached_dataPoints,get_the_post_id_that_used_the_shotcode());
+			cf_stat_data_import($cached_dataPoints,get_the_post_id_that_used_the_shotcode());
 		}
 	}
 }
