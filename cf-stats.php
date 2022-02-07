@@ -3,40 +3,17 @@
  * Plugin Name: CF stats
  * Plugin URI: https://github.com/gougoulias/cf-stats
  * Description: Statistic Charts from Contact form 7 submitions stored by flamingo.
- * Version: 4.1
+ * Version: 4.2
  * Author: Giannis Gougoulias
  * Author URI: https://github.com/gougoulias
  */
 
 include 'functions.php';
 
-// process to create the database table that will store the cached data of the results STARTS
-//cfstat database install
-function cfstat_install_db(){
-	global $wpdb;
-	$table_name = $wpdb->prefix . 'cf_stats';
-	
-	$charset_collate = $wpdb->get_charset_collate();
-
-	$sql = "
-		CREATE TABLE $table_name (
-			id mediumint(9) NOT NULL AUTO_INCREMENT,
-			last_update datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-			form_name tinytext NOT NULL,
-			allstats longtext NOT NULL,
-			dataPoints longtext NOT NULL,
-			post_id mediumint NOT NULL,
-			PRIMARY KEY  (id)
-		);
-		";
-
-	$wpdb->get_results($sql);
-}
-
 // hook to create the database table when the plugin is activated by admin
 register_activation_hook(__FILE__, 'cfstat_install_db' );
-
-// process to create the database table that will store the cached data of the results ENDS
+//hook to delete the database table when the plugin is deactivated by admin
+register_deactivation_hook(__FILE__, 'cfstat_drop_db');
 
 // the main function of the CF Stats Plugin
 function cf_stats_plugin($atts){
