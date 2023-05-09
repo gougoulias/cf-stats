@@ -4,7 +4,7 @@ This is a wordpress plugin that creates statistics and view charts with canvasjs
 <hr>
 <h3>Instructions:</h3>
 Upload the zip into the Wordpress plugins folder or install plugin through the plugin installation page create a page for the results and add the shortcode:</p>
-<p>[cf-stats name="HERE YOU MUST ENTER THE CF7 CONTACT FORM NAME" stats="HERE YOU MUST ADD THE CF7 FIELDS YOU WANT TO DISPLAY" group="HERE YOU MAY ADD CF7 FIELDS YOU WANT TO MAKE GROUPS OF" excludezero="YES" percentage="YES"]</p>
+<p>[cf-stats name="HERE YOU MUST ENTER THE CF7 CONTACT FORM NAME" stats="HERE YOU MUST ADD THE CF7 FIELDS YOU WANT TO DISPLAY" group="HERE YOU MAY ADD CF7 FIELDS YOU WANT TO MAKE GROUPS OF" excludezero="YES" percentage="YES" date_filter="YES"]</p>
 
 <H3>Important Notice:</h3> 
 <p>the NAME and STATS shortcode parameters are required.</p>
@@ -12,7 +12,8 @@ Upload the zip into the Wordpress plugins folder or install plugin through the p
 <p>The GROUP shortcode parameter is optional and its used to make groups of answered question based the contact form 7 fields and answers.</p>
 <p>The EXCLUDEZERO shortcode parameter is optional, and it's purpose is not to show the answers that have not been counted, the only acceptable value is "yes" otherwise is considered as "no" and the zero counted values will be vissible<p>
 <p>The PERCENTAGE shortcode parameter is optional, and it's purpose is to show the answers with percentage value depending the number of answers, the only acceptable value is "yes" otherwise is considered as "no"<p>
+<p>The DATE_FILTER shortcode parameter is optional, and it's purpose is to show a form that user can choose between dates in order to get results of the answers that have been sumbitted in this specific range, the only acceptable value is "yes" otherwise is considered as "no", if this parameter is used in the shortcode then the cached version is overrided as the results should be generated regarding users selections<p>
 <hr>
-<p>Example of use : [cf-stats name="Gallop" stats="question1|This is the question 1,question2,question3,question4" group="gender,age" excludezero="yes" percentage="yes"]</p>
+<p>Example of use : [cf-stats name="Gallop" stats="question1|This is the question 1,question2,question3,question4" group="gender,age" excludezero="yes" percentage="yes" date_filter="yes"]</p>
 <hr>
 <p>From Version 4 there is Cache option added</p>

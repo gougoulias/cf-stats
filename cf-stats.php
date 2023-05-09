@@ -3,7 +3,7 @@
  * Plugin Name: CF stats
  * Plugin URI: https://github.com/gougoulias/cf-stats
  * Description: Statistic Charts from Contact form 7 submitions stored by flamingo.
- * Version: 4.2
+ * Version: 4.3
  * Author: Giannis Gougoulias
  * Author URI: https://github.com/gougoulias
  */
@@ -26,13 +26,14 @@ function cf_stats_plugin($atts){
 		'stats'=>'',
 		'group'=>'',
 		'excludezero'=>'',
-		'percentage'=>'',	
+		'percentage'=>'',
+		'date_filter'=>'',	
 	),$atts));
 
 	//store the cache setting option the user makes
 	$cached_setting=cached_option();
 
-	if ($cached_setting=='on' && check_if_data_stored(get_the_post_id_that_used_the_shotcode()) ){
+	if ($cached_setting=='on' && $date_filter!='yes' && check_if_data_stored(get_the_post_id_that_used_the_shotcode()) ){
 		$allstats=json_decode(cf_stat_get_allstats(get_the_post_id_that_used_the_shotcode()),true);
 		include 'visual.php';
 	}else{
@@ -91,12 +92,31 @@ function cf_stats_plugin($atts){
 		// check if the name parameter and the stats parametere is given in the shortcode
 		if ($name!=null && $stats!=null){
 
-			// set up the post arguments to get all the flamingo inbounds port types IDs and store them to flamingo_post variable
-			$args =array(
-				'post_type'=> 'flamingo_inbound',
-				'fields'=> 'ids',
-				'nopaging'=> true,
-			);
+			//Date filter STARTS
+			if ($date_filter=='yes'){
+				// set up the post arguments to get the flamingo inbounds post types IDs in the specified dates and store them to flamingo_post variable
+				$args =array(
+					'post_type'=> 'flamingo_inbound',
+					'fields'=> 'ids',
+					'nopaging'=> true,
+					'date_query' => array(
+        				array(
+            				'after'     => $_GET['cf_start-date'],
+				            'before'    => $_GET['cf_end-date'],
+				            'inclusive' => true,
+				        ),
+				    ),
+				);
+			}else{
+			//Date filter ENDS
+
+				// set up the post arguments to get all the flamingo inbounds port types IDs and store them to flamingo_post variable
+				$args =array(
+					'post_type'=> 'flamingo_inbound',
+					'fields'=> 'ids',
+					'nopaging'=> true,
+				);
+			}
 
 			$total_number_of_answers=0;// seting the default value for the total number of answers
 
@@ -210,7 +230,12 @@ function cf_stats_plugin($atts){
 			if($get_the_keys){
 				include('visual.php');
 			}else{
-				echo "The are no submited values";
+				if ($date_filter=='yes'){
+					echo "There are no submited values in the date range you have submitted.<br>Use the date filter to search for results in another date range";
+					echo date_filter();
+				}else{
+					echo "The are no submited values";		
+				}
 			}	
 		}else{
 			//print message to user to use the shortcode parameters name and stats as they are required

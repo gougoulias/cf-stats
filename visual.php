@@ -1,6 +1,6 @@
 <?php
 //Save and retrieved cached data from/to database STARTS
-if ($cached_setting=='on' && check_if_data_stored(get_the_post_id_that_used_the_shotcode()) ){
+if ($cached_setting=='on' && $date_filter!='yes' && check_if_data_stored(get_the_post_id_that_used_the_shotcode()) ){
 	//get the values from the database
 	$dataPoints=json_decode(cf_stat_get_data(get_the_post_id_that_used_the_shotcode()),true);
 	if (current_user_can('administrator')){
@@ -87,6 +87,12 @@ if ($cached_setting=='on' && check_if_data_stored(get_the_post_id_that_used_the_
 	}
 }
 //Save and retrieved cached data from/to database ENDS
+
+//create the date filter form STARTS
+if($date_filter=='yes'){
+	echo date_filter();
+}
+//create the date filter form ENDS
 
 //create arrays for groups START
 foreach ($dataPoints as $dPkey => $dPvalue) {

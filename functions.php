@@ -201,3 +201,18 @@ function cf_stat_clear_cached_data($post_id){
 		['%d']
 	);
 }
+
+function date_filter(){
+	$form='<form class="cf_filter_dates" method="get" action="">
+		<label for="cf_start-date">From :</label>
+		<input type="date" id="cf_start-date" name="cf_start-date" value="';
+	$form.=	$_GET['cf_start-date'];
+	$form.= '">
+		<label for="cf_end-date">To :</label>
+		<input type="date" id="cf_end-date" name="cf_end-date" value="';
+	$form.=	$_GET['cf_end-date'];
+	$form.= '">
+		<input type="submit" value="Submit">
+	</form>';
+	return $form;
+}
